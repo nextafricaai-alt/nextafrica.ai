@@ -614,14 +614,13 @@ Object.assign(window, { Nav, Footer, FloatingWhatsApp, ChatBot, WhatsAppGlyph, N
 /* HOME ---------------------------------------------------------------------- */
 const { useState: useStateH } = React;
 
-/* TypingTitle — typewriter that types, holds, erases, retypes in a loop.
-   Kept deliberately minimal to avoid Babel-in-browser parse pitfalls. */
+/* TypingTitle — minimal typewriter. Uses ZERO existing CSS classes so we
+   can prove the animation logic is working without CSS interference. */
 function TypingTitle() {
   var TEXT = 'africa’s intelligent future starts here';
-  var phases = { typing: 1, holding: 2, erasing: 3, resting: 4 };
   var s = useStateH('');
   var shown = s[0]; var setShown = s[1];
-  var p = useStateH(phases.typing);
+  var p = useStateH('typing');
   var phase = p[0]; var setPhase = p[1];
   var c = useStateH(true);
   var cursorOn = c[0]; var setCursorOn = c[1];
@@ -633,30 +632,45 @@ function TypingTitle() {
 
   React.useEffect(function () {
     var t;
-    if (phase === phases.typing) {
+    if (phase === 'typing') {
       if (shown.length < TEXT.length) {
         t = setTimeout(function () { setShown(TEXT.slice(0, shown.length + 1)); }, 70);
       } else {
-        t = setTimeout(function () { setPhase(phases.holding); }, 2500);
+        t = setTimeout(function () { setPhase('holding'); }, 2500);
       }
-    } else if (phase === phases.holding) {
-      t = setTimeout(function () { setPhase(phases.erasing); }, 60);
-    } else if (phase === phases.erasing) {
+    } else if (phase === 'holding') {
+      t = setTimeout(function () { setPhase('erasing'); }, 60);
+    } else if (phase === 'erasing') {
       if (shown.length > 0) {
         t = setTimeout(function () { setShown(TEXT.slice(0, shown.length - 1)); }, 35);
       } else {
-        t = setTimeout(function () { setPhase(phases.resting); }, 500);
+        t = setTimeout(function () { setPhase('resting'); }, 500);
       }
     } else {
-      t = setTimeout(function () { setPhase(phases.typing); }, 60);
+      t = setTimeout(function () { setPhase('typing'); }, 60);
     }
     return function () { clearTimeout(t); };
   }, [shown, phase]);
 
   return (
-    <h1 className="h-display neural-text-title" style={{ marginBottom: 24, minHeight: '1.3em', lineHeight: 1.1 }} aria-label={TEXT}>
+    <h1 style={{
+      fontFamily: 'Space Grotesk, sans-serif',
+      fontSize: 'clamp(40px, 7vw, 104px)',
+      fontWeight: 700,
+      lineHeight: 1.1,
+      letterSpacing: '-0.035em',
+      color: '#ffffff',
+      margin: '0 0 24px',
+      minHeight: '1.3em',
+      opacity: 1
+    }} aria-label={TEXT}>
       <span>{shown}</span>
-      <span aria-hidden="true" style={{ color: 'var(--mint)', marginLeft: 2, opacity: cursorOn ? 1 : 0, transition: 'opacity 80ms ease' }}>|</span>
+      <span aria-hidden="true" style={{
+        color: '#00FC8F',
+        marginLeft: 4,
+        opacity: cursorOn ? 1 : 0,
+        transition: 'opacity 80ms ease'
+      }}>|</span>
     </h1>
   );
 }
@@ -1060,10 +1074,7 @@ function NeuralScrollClusters() {
 function NeuralCluster({ seed = 1 }) {
   // Deterministic pseudo-random based on seed
   const rand = (i) => {
-    const x = Math.sin(seed * 100 + i) * 10000;
-    return x - Math.floor(x);
-  };
-  const nodes = Array.from({
+    const x 
 </script>
   <script type="text/babel" data-source="pages-a.jsx">
 /* ===== pages-a.jsx ===== */
