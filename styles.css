@@ -412,3 +412,46 @@ h1, h2, h3, h4 {
   /* Optimize for landscape tablets and medium-sized screens */
   .wrap { max-width: 960px; }
 }
+
+/* ============================================================================
+ * CSS-only typewriter for the hero headline (zero JavaScript)
+ * ----------------------------------------------------------------------------
+ * .typewriter-text  — the typing text. width grows from 0 to full content
+ *                     size in N discrete steps (= number of characters), so
+ *                     it appears character-by-character. Border-right is the
+ *                     cursor; second animation blinks it.
+ *                     Loops infinitely: type → hold → erase → pause → repeat.
+ * ============================================================================ */
+.typewriter-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: top;
+  border-right: 4px solid var(--mint);
+  max-width: 100%;
+  animation:
+    typewriter-cycle 11s steps(39, end) 0.6s infinite,
+    typewriter-cursor-blink 0.7s step-end infinite;
+}
+
+@keyframes typewriter-cycle {
+  0%   { width: 0;           }   /* start empty */
+  36%  { width: 100%;        }   /* type for ~4s of the 11s cycle */
+  64%  { width: 100%;        }   /* hold for ~3s */
+  91%  { width: 0;           }   /* erase for ~3s */
+  100% { width: 0;           }   /* pause for ~1s before next loop */
+}
+
+@keyframes typewriter-cursor-blink {
+  from, to { border-right-color: transparent; }
+  50%      { border-right-color: var(--mint); }
+}
+
+/* Respect users who prefer reduced motion — show text statically, no animation */
+@media (prefers-reduced-motion: reduce) {
+  .typewriter-text {
+    width: 100% !important;
+    animation: none !important;
+    border-right: none !important;
+  }
+}
