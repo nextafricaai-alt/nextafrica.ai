@@ -455,3 +455,38 @@ h1, h2, h3, h4 {
     border-right: none !important;
   }
 }
+
+/* ============================================================================
+ * Responsive navigation visibility (FIX: previously missing, causing nav to be
+ * invisible on desktop because the inline display:none on .nav-desk had no
+ * CSS override.) Mobile-first: .nav-desk hidden by inline style, .nav-burger
+ * visible. Above 900px: show desktop nav, hide hamburger.
+ * ============================================================================ */
+@media (min-width: 900px) {
+  .nav-desk { display: flex !important; }
+  .nav-burger { display: none !important; }
+}
+
+/* Stronger hover affordance for desktop nav links — clearer "click me" signal */
+.nav-desk a {
+  position: relative;
+  padding: 8px 4px;
+  transition: color 0.15s ease;
+  cursor: pointer;
+}
+.nav-desk a:hover {
+  color: var(--mint) !important;
+}
+.nav-desk a::after {
+  content: '';
+  position: absolute;
+  left: 4px; right: 4px; bottom: 2px;
+  height: 2px;
+  background: var(--mint);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+.nav-desk a:hover::after {
+  transform: scaleX(1);
+}
