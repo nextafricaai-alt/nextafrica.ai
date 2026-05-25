@@ -19,12 +19,12 @@
 
   <!-- SEO / Indexing -->
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <link rel="canonical" href="https://nextafrica.ai/start.html" />
+  <link rel="canonical" href="https://nextafrica.ai/start" />
   <meta name="keywords" content="AI consultation Africa, AI readiness assessment, contact NEXT, book AI strategy session Uganda" />
 
   <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://nextafrica.ai/start.html" />
+  <meta property="og:url" content="https://nextafrica.ai/start" />
   <meta property="og:title" content="Start Your AI Transformation Journey | NEXT" />
   <meta property="og:description" content="Take the free AI Readiness Assessment, request a strategy session, or book a discovery call with NEXT. Begin your transformation today." />
   <meta property="og:image" content="https://nextafrica.ai/assets/next-logo-color.png" />
@@ -35,7 +35,7 @@
 
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://nextafrica.ai/start.html" />
+  <meta name="twitter:url" content="https://nextafrica.ai/start" />
   <meta name="twitter:title" content="Start Your AI Transformation Journey | NEXT" />
   <meta name="twitter:description" content="Take the free AI Readiness Assessment, request a strategy session, or book a discovery call with NEXT. Begin your transformation today." />
   <meta name="twitter:image" content="https://nextafrica.ai/assets/next-logo-color.png" />
@@ -86,7 +86,7 @@
 {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  "url": "https://nextafrica.ai/start.html",
+  "url": "https://nextafrica.ai/start",
   "name": "Start Your AI Transformation Journey | NEXT",
   "description": "Take the free AI Readiness Assessment, request a strategy session, or book a discovery call with NEXT. Begin your transformation today.",
   "isPartOf": {
@@ -132,15 +132,17 @@
 /* Global chrome: nav, footer, floating WhatsApp, NEXT AI Chatbot ------------ */
 const { useState, useEffect, useRef } = React;
 
+// Pretty URLs — .htaccess rewrites these to the real .html files server-side.
+// Home is '/' since Apache DirectoryIndex auto-serves index.html.
 const PAGE_MAP = {
-  home: 'index.html',
-  what: 'what-we-do.html',
-  who: 'who-we-serve.html',
-  work: 'our-work.html',
-  training: 'training.html',
-  insights: 'insights.html',
-  about: 'about.html',
-  start: 'start.html'
+  home: '/',
+  what: '/what-we-do',
+  who: '/who-we-serve',
+  work: '/our-work',
+  training: '/training',
+  insights: '/insights',
+  about: '/about',
+  start: '/start'
 };
 
 const NAV = [
@@ -597,9 +599,6 @@ function NeuralBg() {
       )}
     </svg>);
 
-}
-
-Object.assign(window, { Nav, Footer, FloatingWhatsApp, ChatBot, WhatsAppGlyph, NeuralBg, Logo, PAGE_MAP });
 
 </script>
   <script type="text/babel" data-source="home.jsx">

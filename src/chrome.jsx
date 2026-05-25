@@ -1,15 +1,17 @@
 /* Global chrome: nav, footer, floating WhatsApp, NEXT AI Chatbot ------------ */
 const { useState, useEffect, useRef } = React;
 
+// Pretty URLs — .htaccess rewrites these to the real .html files server-side.
+// Home is '/' since Apache DirectoryIndex auto-serves index.html.
 const PAGE_MAP = {
-  home: 'index.html',
-  what: 'what-we-do.html',
-  who: 'who-we-serve.html',
-  work: 'our-work.html',
-  training: 'training.html',
-  insights: 'insights.html',
-  about: 'about.html',
-  start: 'start.html'
+  home: '/',
+  what: '/what-we-do',
+  who: '/who-we-serve',
+  work: '/our-work',
+  training: '/training',
+  insights: '/insights',
+  about: '/about',
+  start: '/start'
 };
 
 const NAV = [

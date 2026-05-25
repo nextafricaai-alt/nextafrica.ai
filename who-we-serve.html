@@ -19,12 +19,12 @@
 
   <!-- SEO / Indexing -->
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <link rel="canonical" href="https://nextafrica.ai/who-we-serve.html" />
+  <link rel="canonical" href="https://nextafrica.ai/who-we-serve" />
   <meta name="keywords" content="AI for NGOs, AI for schools, AI for churches, AI for healthcare Africa, AI for government Uganda" />
 
   <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://nextafrica.ai/who-we-serve.html" />
+  <meta property="og:url" content="https://nextafrica.ai/who-we-serve" />
   <meta property="og:title" content="Who We Serve — NGOs, Schools, Healthcare & More | NEXT Africa" />
   <meta property="og:description" content="NEXT serves NGOs, schools, churches, corporations, government, and healthcare organizations across East Africa — each with a tailored AI transformation path." />
   <meta property="og:image" content="https://nextafrica.ai/assets/next-logo-color.png" />
@@ -35,7 +35,7 @@
 
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://nextafrica.ai/who-we-serve.html" />
+  <meta name="twitter:url" content="https://nextafrica.ai/who-we-serve" />
   <meta name="twitter:title" content="Who We Serve — NGOs, Schools, Healthcare & More | NEXT Africa" />
   <meta name="twitter:description" content="NEXT serves NGOs, schools, churches, corporations, government, and healthcare organizations across East Africa — each with a tailored AI transformation path." />
   <meta name="twitter:image" content="https://nextafrica.ai/assets/next-logo-color.png" />
@@ -86,7 +86,7 @@
 {
   "@context": "https://schema.org",
   "@type": "AboutPage",
-  "url": "https://nextafrica.ai/who-we-serve.html",
+  "url": "https://nextafrica.ai/who-we-serve",
   "name": "Who We Serve \u2014 NGOs, Schools, Healthcare & More | NEXT Africa",
   "description": "NEXT serves NGOs, schools, churches, corporations, government, and healthcare organizations across East Africa \u2014 each with a tailored AI transformation path.",
   "isPartOf": {
@@ -132,15 +132,17 @@
 /* Global chrome: nav, footer, floating WhatsApp, NEXT AI Chatbot ------------ */
 const { useState, useEffect, useRef } = React;
 
+// Pretty URLs — .htaccess rewrites these to the real .html files server-side.
+// Home is '/' since Apache DirectoryIndex auto-serves index.html.
 const PAGE_MAP = {
-  home: 'index.html',
-  what: 'what-we-do.html',
-  who: 'who-we-serve.html',
-  work: 'our-work.html',
-  training: 'training.html',
-  insights: 'insights.html',
-  about: 'about.html',
-  start: 'start.html'
+  home: '/',
+  what: '/what-we-do',
+  who: '/who-we-serve',
+  work: '/our-work',
+  training: '/training',
+  insights: '/insights',
+  about: '/about',
+  start: '/start'
 };
 
 const NAV = [
@@ -597,9 +599,6 @@ function NeuralBg() {
       )}
     </svg>);
 
-}
-
-Object.assign(window, { Nav, Footer, FloatingWhatsApp, ChatBot, WhatsAppGlyph, NeuralBg, Logo, PAGE_MAP });
 
 </script>
   <script type="text/babel" data-source="home.jsx">
