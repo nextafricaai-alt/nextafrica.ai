@@ -1,17 +1,11 @@
 /* Global chrome: nav, footer, floating WhatsApp, NEXT AI Chatbot ------------ */
 const { useState, useEffect, useRef } = React;
 
-/* ===========================================================================
- * NEXT AI Configuration
- * ---------------------------------------------------------------------------
- * After deploying the Cloudflare Worker (see cloudflare-worker/SETUP.md),
- * paste the Worker URL here. While empty, the chatbot falls back to the
- * scripted-response stub so the site doesn't break.
- * =========================================================================== */
-const NEXT_AI_ENDPOINT = '';   // e.g. 'https://nextafrica-ai-chat.your-subdomain.workers.dev'
+/* NEXT AI Configuration — paste your Cloudflare Worker URL here once deployed.
+   While empty, the chatbot falls back to a scripted reply. */
+const NEXT_AI_ENDPOINT = '';
 
-// Pretty URLs — .htaccess rewrites these to the real .html files server-side.
-// Home is '/' since Apache DirectoryIndex auto-serves index.html.
+// Pretty URLs — .htaccess rewrites these to the .html files server-side.
 const PAGE_MAP = {
   home: '/',
   what: '/what-we-do',
@@ -37,7 +31,7 @@ function Logo({ onClick, variant = 'white', height = 32 }) {
   return (
     <a href="index.html" onClick={(e) => {e.preventDefault();onClick && onClick();}} aria-label="NEXT — home"
     style={{ display: 'inline-flex', alignItems: 'center' }}>
-      <img loading="lazy" decoding="async" src={src} alt="NEXT" style={{ display: 'block', width: '220px', height: '50px', objectFit: 'cover', objectPosition: 'center' }} />
+      <img src={src} alt="NEXT" style={{ display: 'block', width: '220px', height: '50px', objectFit: 'cover', objectPosition: 'center' }} />
     </a>);
 
 }
@@ -292,25 +286,20 @@ function ChatBot({ go }) {
   { label: "Book a discovery call", send: "I'd like to book a discovery call.", action: () => {go('start');setOpen(false);} }];
 
 
-  /* ---------------------------------------------------------------------------
-   * send() — talks to the NEXT AI Worker if configured, otherwise falls back
-   *          to a scripted reply so the demo doesn't break in dev/preview.
-   * ------------------------------------------------------------------------- */
   const send = async (msg) => {
     if (!msg.trim() || busy) return;
-
     const userMsg = { from: 'user', text: msg };
     const nextMessages = [...messages, userMsg];
     setMessages(nextMessages);
     setText('');
     setBusy(true);
 
-    // ── Path A: scripted fallback (when no Worker URL is configured) ──────
+    // Path A: scripted fallback when no Worker URL is configured
     if (!NEXT_AI_ENDPOINT) {
       setTimeout(() => {
         setMessages((m) => [...m, {
           from: 'bot',
-          text: "Tell me a bit more — what's the biggest operational headache in your organisation right now? I can point you to the right place on this site. (Note: the live AI chat isn't wired up yet — only canned replies for now.)"
+          text: "Tell me a bit more — what's the biggest operational headache in your organisation right now? I can point you to the right place on this site. (Note: live AI chat isn't wired up yet.)"
         }]);
         setBusy(false);
         if (nextMessages.length > 4) setShowLeadCapture(true);
@@ -318,16 +307,11 @@ function ChatBot({ go }) {
       return;
     }
 
-    // ── Path B: real chat via Cloudflare Worker → Claude ──────────────────
-    // Convert internal {from,text} shape to Anthropic {role,content} shape.
+    // Path B: real chat via Cloudflare Worker → Claude (streaming SSE)
     const apiMessages = nextMessages
       .filter((m) => m.from === 'user' || m.from === 'bot')
-      .map((m) => ({
-        role: m.from === 'user' ? 'user' : 'assistant',
-        content: m.text,
-      }));
+      .map((m) => ({ role: m.from === 'user' ? 'user' : 'assistant', content: m.text }));
 
-    // Insert a placeholder assistant message we'll stream into.
     let assistantText = '';
     setMessages((m) => [...m, { from: 'bot', text: '' }]);
 
@@ -337,26 +321,16 @@ function ChatBot({ go }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: apiMessages }),
       });
-
-      if (!resp.ok) {
-        const errBody = await resp.text();
-        throw new Error('HTTP ' + resp.status + ': ' + errBody.slice(0, 200));
-      }
-
-      // Parse SSE stream from Claude (proxied through Worker).
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const reader = resp.body.getReader();
       const decoder = new TextDecoder('utf-8');
       let buffer = '';
-
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
-
-        // Each SSE event ends with \n\n. Process complete events; keep partial.
         const events = buffer.split('\n\n');
         buffer = events.pop();
-
         for (const ev of events) {
           const dataLine = ev.split('\n').find((ln) => ln.startsWith('data: '));
           if (!dataLine) continue;
@@ -366,40 +340,28 @@ function ChatBot({ go }) {
             const obj = JSON.parse(raw);
             if (obj.type === 'content_block_delta' && obj.delta && obj.delta.type === 'text_delta') {
               assistantText += obj.delta.text;
-              // Live-update the placeholder bot message
               setMessages((m) => {
                 const copy = m.slice();
                 copy[copy.length - 1] = { from: 'bot', text: assistantText };
                 return copy;
               });
             }
-          } catch (e) {
-            // Ignore malformed SSE chunks; Claude occasionally interleaves keepalives.
-          }
+          } catch (e) { /* skip malformed chunk */ }
         }
       }
-
       if (!assistantText.trim()) {
-        // If the stream ended with no text, show a graceful fallback.
         setMessages((m) => {
           const copy = m.slice();
-          copy[copy.length - 1] = {
-            from: 'bot',
-            text: "Hmm, I didn't get a reply through. Could you try asking again?",
-          };
+          copy[copy.length - 1] = { from: 'bot', text: "Hmm, I didn't get a reply — could you try again?" };
           return copy;
         });
       }
-
       if (nextMessages.length > 4) setShowLeadCapture(true);
     } catch (err) {
-      console.error('[NEXT AI] chat failed:', err);
+      console.error('[NEXT AI]', err);
       setMessages((m) => {
         const copy = m.slice();
-        copy[copy.length - 1] = {
-          from: 'bot',
-          text: "Sorry, I'm having trouble connecting right now. You can reach the team directly via WhatsApp (button below) or use the Start page.",
-        };
+        copy[copy.length - 1] = { from: 'bot', text: "Sorry, I'm having trouble connecting. You can reach the team via WhatsApp (button below) or the Start page." };
         return copy;
       });
     } finally {
