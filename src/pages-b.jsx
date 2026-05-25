@@ -286,12 +286,12 @@ const VALUES = [
 ['Intelligence', 'We bring deep expertise and rigorous thinking to every engagement.'],
 ['Trust', 'We build relationships before we build systems.'],
 ['Impact', 'We measure success by the transformation our clients experience.'],
-['Africanism', 'Built for Africa, by Africans, with Africa's realities at the center.'],
+["Africanism", "Built for Africa, by Africans, with Africa's realities at the center."],
 ['Excellence', 'We deliver work we are proud of, every time.']];
 
 const TEAM = [
-['Tumusiime Hudson Timothy', 'Founder & CEO', 'Builds the systems Africa's most ambitious organizations run on.'],
-['Yiga Patrick Emmanuel', 'Developer', 'Designs the AI workflows that quietly remove a week's work from a team's month.'],
+["Tumusiime Hudson Timothy", "Founder & CEO", "Builds the systems Africa's most ambitious organizations run on."],
+["Yiga Patrick Emmanuel", "Developer", "Designs the AI workflows that quietly remove a week's work from a team's month."],
 ['Kawalya Jessy', 'Trainer', 'Has trained more than 500 East African professionals on practical AI tools.']];
 
 
@@ -506,7 +506,7 @@ function Assessment({ go }) {
     let tier;
     if (score >= 14) tier = { name: 'AI Ready', color: 'var(--mint)', body: "You're already operating digitally — now it's time to layer on intelligence. We'd recommend starting with a focused AI Integration engagement on your highest-leverage workflow." };else
     if (score >= 9) tier = { name: 'AI Curious', color: 'var(--gold)', body: "You're past 'manual', but the system is fragmented. We'd recommend an Intelligence Audit followed by a 90-day transformation roadmap." };else
-    tier = { name: 'AI Beginner', color: 'var(--mint)', body: 'Most of your organization is still on paper or basic tools — and that's okay. The right next step is the AI Executive Seminar plus a Digital Infrastructure foundation.' };
+    tier = { name: 'AI Beginner', color: 'var(--mint)', body: "Most of your organization is still on paper or basic tools — and that's okay. The right next step is the AI Executive Seminar plus a Digital Infrastructure foundation." };
     return (
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.6fr)', gap: 32 }} className="grid-stack">
         <div className="card" style={{ padding: 40, borderColor: tier.color }}>
