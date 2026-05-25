@@ -1,6 +1,53 @@
 /* HOME ---------------------------------------------------------------------- */
 const { useState: useStateH } = React;
 
+/* TypingTitle — typewriter that types, holds, erases, retypes in a loop.
+   Kept deliberately minimal to avoid Babel-in-browser parse pitfalls. */
+function TypingTitle() {
+  var TEXT = 'africa’s intelligent future starts here';
+  var phases = { typing: 1, holding: 2, erasing: 3, resting: 4 };
+  var s = useStateH('');
+  var shown = s[0]; var setShown = s[1];
+  var p = useStateH(phases.typing);
+  var phase = p[0]; var setPhase = p[1];
+  var c = useStateH(true);
+  var cursorOn = c[0]; var setCursorOn = c[1];
+
+  React.useEffect(function () {
+    var id = setInterval(function () { setCursorOn(function (v) { return !v; }); }, 530);
+    return function () { clearInterval(id); };
+  }, []);
+
+  React.useEffect(function () {
+    var t;
+    if (phase === phases.typing) {
+      if (shown.length < TEXT.length) {
+        t = setTimeout(function () { setShown(TEXT.slice(0, shown.length + 1)); }, 70);
+      } else {
+        t = setTimeout(function () { setPhase(phases.holding); }, 2500);
+      }
+    } else if (phase === phases.holding) {
+      t = setTimeout(function () { setPhase(phases.erasing); }, 60);
+    } else if (phase === phases.erasing) {
+      if (shown.length > 0) {
+        t = setTimeout(function () { setShown(TEXT.slice(0, shown.length - 1)); }, 35);
+      } else {
+        t = setTimeout(function () { setPhase(phases.resting); }, 500);
+      }
+    } else {
+      t = setTimeout(function () { setPhase(phases.typing); }, 60);
+    }
+    return function () { clearTimeout(t); };
+  }, [shown, phase]);
+
+  return (
+    <h1 className="h-display neural-text-title" style={{ marginBottom: 24, minHeight: '1.3em', lineHeight: 1.1 }} aria-label={TEXT}>
+      <span>{shown}</span>
+      <span aria-hidden="true" style={{ color: 'var(--mint)', marginLeft: 2, opacity: cursorOn ? 1 : 0, transition: 'opacity 80ms ease' }}>|</span>
+    </h1>
+  );
+}
+
 function Home({ go }) {
   return (
     <div className="page">
@@ -23,10 +70,7 @@ function Home({ go }) {
             <span className="dot" /> AI & DIGITAL TRANSFORMATION · EAST AFRICA
           </div>
           <div className="neural-text-container">
-            <h1 className="h-display neural-text-title" style={{ marginBottom: 24 }}>
-              Africa's Intelligent<br />
-              Future <span style={{ color: 'var(--mint)', fontStyle: 'italic', fontWeight: 600 }}>Starts Here.</span>
-            </h1>
+            <TypingTitle />
           </div>
           <div className="neural-subtitle-container">
             <p className="lede neural-subtitle-text" style={{ margin: '0 auto 40px', maxWidth: 640 }}>
