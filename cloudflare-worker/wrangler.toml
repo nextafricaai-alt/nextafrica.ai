@@ -1,0 +1,7 @@
+# Cloudflare Worker config — wrangler deploys based on this file.
+name = "nextafrica-ai-chat"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Free tier is plenty (100k requests/day, 10ms CPU per request)
+# Custom domain optional — Cloudflare gives you a free *.workers.dev subdomain

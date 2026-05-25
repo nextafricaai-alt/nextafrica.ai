@@ -139,6 +139,15 @@
 /* Global chrome: nav, footer, floating WhatsApp, NEXT AI Chatbot ------------ */
 const { useState, useEffect, useRef } = React;
 
+/* ===========================================================================
+ * NEXT AI Configuration
+ * ---------------------------------------------------------------------------
+ * After deploying the Cloudflare Worker (see cloudflare-worker/SETUP.md),
+ * paste the Worker URL here. While empty, the chatbot falls back to the
+ * scripted-response stub so the site doesn't break.
+ * =========================================================================== */
+const NEXT_AI_ENDPOINT = '';   // e.g. 'https://nextafrica-ai-chat.your-subdomain.workers.dev'
+
 // Pretty URLs — .htaccess rewrites these to the real .html files server-side.
 // Home is '/' since Apache DirectoryIndex auto-serves index.html.
 const PAGE_MAP = {
@@ -421,19 +430,119 @@ function ChatBot({ go }) {
   { label: "Book a discovery call", send: "I'd like to book a discovery call.", action: () => {go('start');setOpen(false);} }];
 
 
+  /* ---------------------------------------------------------------------------
+   * send() — talks to the NEXT AI Worker if configured, otherwise falls back
+   *          to a scripted reply so the demo doesn't break in dev/preview.
+   * ------------------------------------------------------------------------- */
   const send = async (msg) => {
-    if (!msg.trim()) return;
+    if (!msg.trim() || busy) return;
+
     const userMsg = { from: 'user', text: msg };
-    setMessages((m) => [...m, userMsg]);
+    const nextMessages = [...messages, userMsg];
+    setMessages(nextMessages);
     setText('');
     setBusy(true);
 
-    // Scripted fallback reply (no Claude API in static export)
-    setTimeout(() => {
-      setMessages((m) => [...m, { from: 'bot', text: "Tell me a bit more — what's the biggest operational headache in your organization right now? I can point you to the right place on this site." }]);
+    // ── Path A: scripted fallback (when no Worker URL is configured) ──────
+    if (!NEXT_AI_ENDPOINT) {
+      setTimeout(() => {
+        setMessages((m) => [...m, {
+          from: 'bot',
+          text: "Tell me a bit more — what's the biggest operational headache in your organisation right now? I can point you to the right place on this site. (Note: the live AI chat isn't wired up yet — only canned replies for now.)"
+        }]);
+        setBusy(false);
+        if (nextMessages.length > 4) setShowLeadCapture(true);
+      }, 800);
+      return;
+    }
+
+    // ── Path B: real chat via Cloudflare Worker → Claude ──────────────────
+    // Convert internal {from,text} shape to Anthropic {role,content} shape.
+    const apiMessages = nextMessages
+      .filter((m) => m.from === 'user' || m.from === 'bot')
+      .map((m) => ({
+        role: m.from === 'user' ? 'user' : 'assistant',
+        content: m.text,
+      }));
+
+    // Insert a placeholder assistant message we'll stream into.
+    let assistantText = '';
+    setMessages((m) => [...m, { from: 'bot', text: '' }]);
+
+    try {
+      const resp = await fetch(NEXT_AI_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: apiMessages }),
+      });
+
+      if (!resp.ok) {
+        const errBody = await resp.text();
+        throw new Error('HTTP ' + resp.status + ': ' + errBody.slice(0, 200));
+      }
+
+      // Parse SSE stream from Claude (proxied through Worker).
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let buffer = '';
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        // Each SSE event ends with \n\n. Process complete events; keep partial.
+        const events = buffer.split('\n\n');
+        buffer = events.pop();
+
+        for (const ev of events) {
+          const dataLine = ev.split('\n').find((ln) => ln.startsWith('data: '));
+          if (!dataLine) continue;
+          const raw = dataLine.slice(6).trim();
+          if (!raw || raw === '[DONE]') continue;
+          try {
+            const obj = JSON.parse(raw);
+            if (obj.type === 'content_block_delta' && obj.delta && obj.delta.type === 'text_delta') {
+              assistantText += obj.delta.text;
+              // Live-update the placeholder bot message
+              setMessages((m) => {
+                const copy = m.slice();
+                copy[copy.length - 1] = { from: 'bot', text: assistantText };
+                return copy;
+              });
+            }
+          } catch (e) {
+            // Ignore malformed SSE chunks; Claude occasionally interleaves keepalives.
+          }
+        }
+      }
+
+      if (!assistantText.trim()) {
+        // If the stream ended with no text, show a graceful fallback.
+        setMessages((m) => {
+          const copy = m.slice();
+          copy[copy.length - 1] = {
+            from: 'bot',
+            text: "Hmm, I didn't get a reply through. Could you try asking again?",
+          };
+          return copy;
+        });
+      }
+
+      if (nextMessages.length > 4) setShowLeadCapture(true);
+    } catch (err) {
+      console.error('[NEXT AI] chat failed:', err);
+      setMessages((m) => {
+        const copy = m.slice();
+        copy[copy.length - 1] = {
+          from: 'bot',
+          text: "Sorry, I'm having trouble connecting right now. You can reach the team directly via WhatsApp (button below) or use the Start page.",
+        };
+        return copy;
+      });
+    } finally {
       setBusy(false);
-      if (messages.length > 4) setShowLeadCapture(true);
-    }, 1200);
+    }
   };
 
   return (
@@ -502,111 +611,7 @@ function ChatBot({ go }) {
           }}>{m.text}</div>
           )}
             {busy &&
-          <div style={{ alignSelf: 'flex-start', padding: '12px 14px', borderRadius: 14, background: 'var(--purple-mid)', display: 'inline-flex', gap: 4 }}>
-                <Dot delay={0} /><Dot delay={150} /><Dot delay={300} />
-              </div>
-          }
-            {showLeadCapture &&
-          <div style={{
-            marginTop: 8, padding: 16,
-            background: 'rgba(255,180,0,0.08)',
-            border: '1px solid rgba(255,180,0,0.3)',
-            borderRadius: 14
-          }}>
-                <div className="eyebrow gold" style={{ marginBottom: 8 }}>NEXT STEP</div>
-                <div style={{ fontSize: 14, lineHeight: 1.5, marginBottom: 12 }}>
-                  Want a real plan? Book a free 30-minute discovery call.
-                </div>
-                <button className="btn btn-gold btn-sm" onClick={() => {go('start');setOpen(false);}}>
-                  Book a call <span className="arr">→</span>
-                </button>
-              </div>
-          }
-          </div>
-
-          <div style={{ padding: '12px 16px', borderTop: '1px solid var(--purple-line)' }}>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
-              {chips.map((c) =>
-            <button key={c.label} onClick={() => {c.action && c.action();send(c.send);}}
-            style={{
-              fontSize: 12, padding: '6px 10px',
-              borderRadius: 999,
-              background: 'transparent',
-              border: '1px solid var(--purple-line)',
-              color: 'rgba(255,255,255,0.85)'
-            }}>{c.label}</button>
-            )}
-            </div>
-            <form onSubmit={(e) => {e.preventDefault();send(text);}} style={{ display: 'flex', gap: 8 }}>
-              <input value={text} onChange={(e) => setText(e.target.value)}
-            placeholder="Ask NEXT AI anything…"
-            style={{
-              flex: 1, background: 'var(--purple)', border: '1px solid var(--purple-line)',
-              color: 'white', padding: '12px 14px', borderRadius: 12, outline: 'none'
-            }} />
-              <button type="submit" className="btn btn-primary btn-sm" disabled={!text.trim() || busy}
-            style={{ padding: '0 16px' }}>
-                <span className="arr">→</span>
-              </button>
-            </form>
-          </div>
-        </div>
-      }
-    </>);
-
-}
-
-function Dot({ delay = 0 }) {
-  return <span style={{
-    width: 6, height: 6, borderRadius: 999, background: 'var(--mint)',
-    animation: 'dotBlink 1s infinite', animationDelay: `${delay}ms`
-  }} />;
-}
-
-/* Hero neural-net (geometric, decorative — not figurative) ------------------ */
-function NeuralBg() {
-  const nodes = [];
-  const cols = 9,rows = 5;
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const jitterX = (c * 37 + r * 13) % 17 - 8;
-      const jitterY = (c * 11 + r * 29) % 13 - 6;
-      nodes.push({ x: c * 12 + 4 + jitterX * 0.4, y: r * 18 + 8 + jitterY * 0.3, r: r % 2 === 0 ? 0.6 : 0.4 });
-    }
-  }
-  const edges = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const i = r * cols + c;
-      if (c < cols - 1) edges.push([i, i + 1]);
-      if (r < rows - 1) edges.push([i, i + cols]);
-    }
-  }
-  return (
-    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden
-    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.7 }}>
-      <defs>
-        <radialGradient id="glow" cx="50%" cy="40%" r="60%">
-          <stop offset="0%" stopColor="#00FC8F" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#00FC8F" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <rect width="100" height="100" fill="url(#glow)" />
-      {edges.map(([a, b], i) => {
-        const A = nodes[a],B = nodes[b];
-        return <line key={i} x1={A.x} y1={A.y} x2={B.x} y2={B.y}
-        stroke="#00FC8F" strokeOpacity={i % 17 / 80 + 0.05} strokeWidth="0.08" />;
-      })}
-      {nodes.map((n, i) =>
-      <circle key={i} cx={n.x} cy={n.y} r={n.r}
-      fill="#00FC8F"
-      opacity={i % 7 / 12 + 0.25}>
-          <animate attributeName="opacity" values={`${i % 7 / 12 + 0.2};${i % 7 / 12 + 0.6};${i % 7 / 12 + 0.2}`} dur={`${3 + i % 5}s`} repeatCount="indefinite" />
-        </circle>
-      )}
-    </svg>);
-
-
+          <div style={{ alignSelf:
 </script>
   <script type="text/babel" data-source="home.jsx">
 /* ===== home.jsx ===== */
