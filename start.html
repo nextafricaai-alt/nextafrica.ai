@@ -1809,12 +1809,12 @@ const VALUES = [
 ['Intelligence', 'We bring deep expertise and rigorous thinking to every engagement.'],
 ['Trust', 'We build relationships before we build systems.'],
 ['Impact', 'We measure success by the transformation our clients experience.'],
-['Africanism', 'Built for Africa, by Africans, with Africa\u2019s realities at the center.'],
+['Africanism', 'Built for Africa, by Africans, with Africa's realities at the center.'],
 ['Excellence', 'We deliver work we are proud of, every time.']];
 
 const TEAM = [
-['Tumusiime Hudson Timothy', 'Founder & CEO', 'Builds the systems Africa\u2019s most ambitious organizations run on.'],
-['Yiga Patrick Emmanuel', 'Developer', 'Designs the AI workflows that quietly remove a week\u2019s work from a team\u2019s month.'],
+['Tumusiime Hudson Timothy', 'Founder & CEO', 'Builds the systems Africa's most ambitious organizations run on.'],
+['Yiga Patrick Emmanuel', 'Developer', 'Designs the AI workflows that quietly remove a week's work from a team's month.'],
 ['Kawalya Jessy', 'Trainer', 'Has trained more than 500 East African professionals on practical AI tools.']];
 
 
@@ -1828,23 +1828,49 @@ function About({ go }) {
       
 
       <section className="section dark">
-        <div className="wrap" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 0.5fr) minmax(0, 1fr)', gap: 64, alignItems: 'start' }} className="grid-stack">
-          <div>
+        <div className="wrap">
+          {/* Heading at top, full width */}
+          <div style={{ maxWidth: 720, marginBottom: 56 }}>
             <div className="eyebrow" style={{ marginBottom: 16 }}>THE NEXT STORY</div>
-            <h2 className="h-2" style={{ marginBottom: 24 }}>Why we exist.</h2>
-            <img loading="lazy" decoding="async" src="assets/hudson-founder-photo.jpg" alt="Hudson Timothy Tumusiime, Founder & CEO" style={{ width: '100%', height: 'auto', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '4/5' }} />
+            <h2 className="h-2" style={{ margin: 0 }}>Why we exist.</h2>
           </div>
-          <div style={{ paddingTop: '52px' }}>
-            <div className="eyebrow mint" style={{ marginBottom: 12 }}>FOUNDER</div>
-            <p className="body" style={{ fontSize: 15, lineHeight: 1.7, marginTop: 0 }}>
-              Hudson Timothy Tumusiime has spent his career at the intersection of communication, technology, and mission. As founder and CEO of NEXT, he is building Africa\u2019s leading AI and digital transformation company — one that doesn\u2019t just consult, but builds real systems that change how organisations operate. He is also the founder and CEO of Charis Creations, a media production and communications company that has worked with some of Uganda\u2019s most influential organisations, churches, and brands. Through that work, he saw the same gap everywhere: powerful organisations running on broken systems. NEXT was born from that frustration — and from the belief that African organisations deserve world-class digital infrastructure. Hudson also serves as Communications Director for Fathers Arise under The Remnant Generation, where he applies the same strategic communication principles he brings to all his work: clarity, systems, and storytelling that moves people to action. He is based in Kampala, Uganda — and he is building for the long term.
-            </p>
+
+          {/* 2-column grid: portrait | bio */}
+          <div className="grid-stack" style={{
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0, 0.4fr) minmax(0, 0.6fr)',
+            gap: 56,
+            alignItems: 'start'
+          }}>
+            <div style={{ maxWidth: 440, justifySelf: 'start' }}>
+              <img
+                loading="lazy"
+                decoding="async"
+                src="assets/hudson-founder-photo.jpg"
+                alt="Hudson Timothy Tumusiime, Founder & CEO"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  objectFit: 'cover',
+                  objectPosition: 'center 20%',
+                  borderRadius: 'var(--radius)',
+                  display: 'block',
+                  aspectRatio: '4/5'
+                }}
+              />
+            </div>
+            <div>
+              <div className="eyebrow mint" style={{ marginBottom: 12 }}>FOUNDER</div>
+              <p className="body" style={{ fontSize: 15, lineHeight: 1.75, marginTop: 0 }}>
+                Hudson Timothy Tumusiime has spent his career at the intersection of communication, technology, and mission. As founder and CEO of NEXT, he is building Africa's leading AI and digital transformation company — one that doesn't just consult, but builds real systems that change how organisations operate. He is also the founder and CEO of Charis Creations, a media production and communications company that has worked with some of Uganda's most influential organisations, churches, and brands. Through that work, he saw the same gap everywhere: powerful organisations running on broken systems. NEXT was born from that frustration — and from the belief that African organisations deserve world-class digital infrastructure. Hudson also serves as Communications Director for Fathers Arise under The Remnant Generation, where he applies the same strategic communication principles he brings to all his work: clarity, systems, and storytelling that moves people to action. He is based in Kampala, Uganda — and he is building for the long term.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       <section className="section deep">
-        <div className="wrap" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 32 }} className="grid-stack">
+        <div className="wrap grid-stack" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 32 }} >
           <div className="card" style={{ padding: 40 }}>
             <div className="eyebrow gold" style={{ marginBottom: 16 }}>MISSION</div>
             <p style={{ fontSize: 22, fontWeight: 500, lineHeight: 1.4, letterSpacing: '-0.01em', margin: 0 }}>
@@ -2003,7 +2029,7 @@ function Assessment({ go }) {
     let tier;
     if (score >= 14) tier = { name: 'AI Ready', color: 'var(--mint)', body: "You're already operating digitally — now it's time to layer on intelligence. We'd recommend starting with a focused AI Integration engagement on your highest-leverage workflow." };else
     if (score >= 9) tier = { name: 'AI Curious', color: 'var(--gold)', body: "You're past 'manual', but the system is fragmented. We'd recommend an Intelligence Audit followed by a 90-day transformation roadmap." };else
-    tier = { name: 'AI Beginner', color: 'var(--mint)', body: 'Most of your organization is still on paper or basic tools — and that\u2019s okay. The right next step is the AI Executive Seminar plus a Digital Infrastructure foundation.' };
+    tier = { name: 'AI Beginner', color: 'var(--mint)', body: 'Most of your organization is still on paper or basic tools — and that's okay. The right next step is the AI Executive Seminar plus a Digital Infrastructure foundation.' };
     return (
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.6fr)', gap: 32 }} className="grid-stack">
         <div className="card" style={{ padding: 40, borderColor: tier.color }}>
