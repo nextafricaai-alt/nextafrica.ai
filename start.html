@@ -1,0 +1,2147 @@
+<!doctype html>
+<html lang="en" data-page="start">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Start Your Transformation — NEXT</title>
+  <meta name="description" content="Take the free AI Readiness Assessment, contact us, or book a discovery call." />
+  <meta name="theme-color" content="#140035" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-source="chrome.jsx">
+/* ===== chrome.jsx ===== */
+/* Global chrome: nav, footer, floating WhatsApp, NEXT AI Chatbot ------------ */
+const { useState, useEffect, useRef } = React;
+
+const PAGE_MAP = {
+  home: 'index.html',
+  what: 'what-we-do.html',
+  who: 'who-we-serve.html',
+  work: 'our-work.html',
+  training: 'training.html',
+  insights: 'insights.html',
+  about: 'about.html',
+  start: 'start.html'
+};
+
+const NAV = [
+{ id: 'what', label: 'What We Do' },
+{ id: 'who', label: 'Who We Serve' },
+{ id: 'work', label: 'Our Work' },
+{ id: 'training', label: 'Training' },
+{ id: 'insights', label: 'Insights' },
+{ id: 'about', label: 'About' }];
+
+
+function Logo({ onClick, variant = 'white', height = 32 }) {
+  const src = 'assets/next-logo-color-transparent.png';
+  return (
+    <a href="index.html" onClick={(e) => {e.preventDefault();onClick && onClick();}} aria-label="NEXT — home"
+    style={{ display: 'inline-flex', alignItems: 'center' }}>
+      <img src={src} alt="NEXT" style={{ display: 'block', width: '220px', height: '50px', objectFit: 'cover', objectPosition: 'center' }} />
+    </a>);
+
+}
+
+function Nav({ page, go }) {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  useEffect(() => {
+    document.body.classList.toggle('no-scroll', open);
+  }, [open]);
+
+  const goNav = (id) => {setOpen(false);go(id);};
+
+  return (
+    <header style={{
+      position: 'sticky', top: 0, zIndex: 50,
+      background: scrolled ? 'rgba(10,0,32,0.85)' : 'transparent',
+      backdropFilter: scrolled ? 'blur(14px)' : 'none',
+      borderBottom: scrolled ? '1px solid var(--purple-line)' : '1px solid transparent',
+      transition: 'all .2s ease'
+    }}>
+      <div className="wrap" style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        height: 72
+      }}>
+        <Logo onClick={() => goNav('home')} />
+
+        <nav style={{ display: 'none', gap: 28, alignItems: 'center' }} className="nav-desk">
+          {NAV.map((n) =>
+          <a key={n.id} href={PAGE_MAP[n.id]}
+          onClick={(e) => {e.preventDefault();goNav(n.id);}}
+          style={{
+            fontSize: 14, fontWeight: 500,
+            color: page === n.id ? 'var(--mint)' : 'rgba(255,255,255,0.78)',
+            letterSpacing: '-0.005em'
+          }}>
+              {n.label}
+            </a>
+          )}
+        </nav>
+
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <button className="btn btn-primary btn-sm" onClick={() => goNav('start')}>
+            Start <span className="arr">→</span>
+          </button>
+          <button onClick={() => setOpen(!open)} aria-label="Menu"
+          className="nav-burger"
+          style={{
+            width: 44, height: 44, borderRadius: 10,
+            border: '1px solid var(--purple-line)',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
+          }}>
+            <div style={{ width: 18, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <span style={{ height: 2, background: 'white', transition: 'all .2s', transform: open ? 'translateY(6px) rotate(45deg)' : 'none' }} />
+              <span style={{ height: 2, background: 'white', opacity: open ? 0 : 1 }} />
+              <span style={{ height: 2, background: 'white', transition: 'all .2s', transform: open ? 'translateY(-6px) rotate(-45deg)' : 'none' }} />
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {open &&
+      <div style={{
+        position: 'fixed', inset: '72px 0 0 0', zIndex: 49,
+        background: 'var(--purple-deep)',
+        padding: '32px 24px',
+        overflow: 'auto'
+      }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {[{ id: 'home', label: 'Home' }, ...NAV, { id: 'start', label: 'Start' }].map((n) =>
+          <a key={n.id} href={PAGE_MAP[n.id]}
+          onClick={(e) => {e.preventDefault();goNav(n.id);}}
+          style={{
+            padding: '20px 0',
+            fontSize: 28, fontWeight: 600, letterSpacing: '-0.02em',
+            color: page === n.id ? 'var(--mint)' : 'white',
+            borderBottom: '1px solid var(--purple-line)',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+          }}>
+                <span>{n.label}</span>
+                <span style={{ color: 'var(--mint)', fontSize: 20 }}>→</span>
+              </a>
+          )}
+          </nav>
+          <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <button className="btn btn-primary" onClick={() => goNav('start')}>
+              Take the Free Assessment <span className="arr">→</span>
+            </button>
+            <a href="https://wa.me/256706028899" className="btn btn-ghost">
+              <WhatsAppGlyph /> WhatsApp
+            </a>
+          </div>
+        </div>
+      }
+
+      <style>{`
+        @media (min-width: 980px) {
+          .nav-desk { display: flex !important; }
+          .nav-burger { display: none !important; }
+        }
+      `}</style>
+    </header>);
+
+}
+
+function Footer({ go }) {
+  return (
+    <footer className="section deep" style={{ padding: '80px 0 40px', borderTop: '1px solid var(--purple-line)' }}>
+      <div className="wrap">
+        <div style={{
+          display: 'grid', gap: 48,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))'
+        }}>
+          <div>
+            <Logo onClick={() => go('home')} />
+            <p style={{ marginTop: 20, color: 'rgba(255,255,255,0.7)', fontSize: 15, lineHeight: 1.55, maxWidth: 280 }}>
+              Helping African organizations transition from manual systems into intelligent ones.
+            </p>
+            <div style={{ marginTop: 24, display: 'flex', gap: 12 }}>
+              {[
+                ['LinkedIn', 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z'],
+                ['Instagram', 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z'],
+                ['YouTube', 'M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z'],
+                ['X', 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z']
+              ].map(([label, path]) =>
+              <a key={label} href="#" aria-label={label} style={{
+                width: 40, height: 40, borderRadius: 999,
+                border: '1px solid var(--purple-line)',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                color: 'rgba(255,255,255,0.7)', transition: 'border-color .2s, color .2s'
+              }}><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d={path}/></svg></a>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>Services</div>
+            <FooterLinks items={[
+            ['AI Integration & Automation', 'what'],
+            ['Digital Infrastructure', 'what'],
+            ['AI Training & Education', 'training'],
+            ['Creative AI Media', 'what'],
+            ['Smart Operations Consulting', 'what']]
+            } go={go} />
+          </div>
+
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>Company</div>
+            <FooterLinks items={[
+            ['About', 'about'],
+            ['Our Work', 'work'],
+            ['Training', 'training'],
+            ['Insights', 'insights'],
+            ['Start', 'start']]
+            } go={go} />
+          </div>
+
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>Contact</div>
+            <p style={{ color: 'rgba(255,255,255,0.78)', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+              hello@nextafrica.ai<br />
+              +256 706 028 899<br />
+              Kampala · Uganda
+            </p>
+            <a href="https://wa.me/256706028899" className="btn btn-primary btn-sm" style={{ marginTop: 16 }}>
+              <WhatsAppGlyph dark /> WhatsApp Us
+            </a>
+          </div>
+        </div>
+
+        <div style={{
+          marginTop: 64, paddingTop: 24, borderTop: '1px solid var(--purple-line)',
+          display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16,
+          fontSize: 13, color: 'rgba(255,255,255,0.55)'
+        }}>
+          <div>© 2026 NEXT · Africa's Intelligent Future Starts Here.</div>
+          <div style={{ display: 'flex', gap: 24 }}>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+          </div>
+        </div>
+      </div>
+    </footer>);
+
+}
+
+function FooterLinks({ items, go }) {
+  return (
+    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {items.map(([label, id]) =>
+      <li key={label}>
+          <a href={PAGE_MAP[id]} onClick={(e) => {e.preventDefault();go(id);}}
+        style={{ fontSize: 14, color: 'rgba(255,255,255,0.78)' }}>{label}</a>
+        </li>
+      )}
+    </ul>);
+
+}
+
+function WhatsAppGlyph({ dark = false, size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M17.6 14.3c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.7-1.4-1.7-1.6-1.9-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.2-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 2.5 1 3 .8 3.6.8.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4z"
+      fill="currentColor" />
+      <path d="M12 2C6.5 2 2 6.5 2 12c0 1.7.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3c-.9-1.4-1.3-2.9-1.3-4.5 0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2-3.6 8.4-8 8.4z"
+      fill="currentColor" />
+    </svg>);
+
+}
+
+function FloatingWhatsApp() {
+  return (
+    <a href="https://wa.me/256706028899"
+    aria-label="Chat with NEXT on WhatsApp"
+    style={{
+      position: 'fixed', bottom: 24, right: 24, zIndex: 60,
+      width: 60, height: 60, borderRadius: 999,
+      background: '#25D366', color: 'white',
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: '0 12px 40px -8px rgba(37,211,102,0.55), 0 0 0 4px rgba(37,211,102,0.18)'
+    }}>
+      <WhatsAppGlyph size={28} />
+    </a>);
+
+}
+
+/* NEXT AI Chatbot ----------------------------------------------------------- */
+function ChatBot({ go }) {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState([
+  { from: 'bot', text: "Hi — I'm NEXT AI. I help organizations across East Africa figure out their next move with AI. What kind of organization are you with?" }]
+  );
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [showLeadCapture, setShowLeadCapture] = useState(false);
+  const scrollRef = useRef();
+
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [messages, busy, showLeadCapture]);
+
+  const chips = [
+  { label: "I'm an NGO", send: "I'm with an NGO — what can NEXT do for us?" },
+  { label: "I run a school", send: "I run a school in East Africa." },
+  { label: "Show me case studies", send: "Can you show me case studies?", action: () => go('work') },
+  { label: "Book a discovery call", send: "I'd like to book a discovery call.", action: () => {go('start');setOpen(false);} }];
+
+
+  const send = async (msg) => {
+    if (!msg.trim()) return;
+    const userMsg = { from: 'user', text: msg };
+    setMessages((m) => [...m, userMsg]);
+    setText('');
+    setBusy(true);
+
+    // Scripted fallback reply (no Claude API in static export)
+    setTimeout(() => {
+      setMessages((m) => [...m, { from: 'bot', text: "Tell me a bit more — what's the biggest operational headache in your organization right now? I can point you to the right place on this site." }]);
+      setBusy(false);
+      if (messages.length > 4) setShowLeadCapture(true);
+    }, 1200);
+  };
+
+  return (
+    <>
+      {/* Launcher */}
+      <button onClick={() => setOpen(!open)}
+      style={{
+        position: 'fixed', bottom: 96, right: 24, zIndex: 60,
+        background: 'var(--mint)', color: 'var(--purple)',
+        padding: '14px 18px', borderRadius: 999,
+        fontWeight: 600, fontSize: 14,
+        display: 'inline-flex', alignItems: 'center', gap: 10,
+        boxShadow: '0 12px 40px -8px rgba(0,252,143,0.5), 0 0 0 1px rgba(0,252,143,0.6)'
+      }}>
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: 'var(--purple)' }} />
+        {open ? 'Close NEXT AI' : 'Chat with NEXT AI'}
+      </button>
+
+      {open &&
+      <div style={{
+        position: 'fixed',
+        right: 24, bottom: 168,
+        width: 'min(380px, calc(100vw - 48px))',
+        height: 'min(620px, calc(100vh - 200px))',
+        background: 'var(--purple-deep)',
+        border: '1px solid var(--purple-line)',
+        borderRadius: 20,
+        zIndex: 60,
+        display: 'flex', flexDirection: 'column',
+        overflow: 'hidden',
+        boxShadow: '0 30px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,252,143,0.18)'
+      }}>
+          <div style={{
+          padding: '16px 20px',
+          borderBottom: '1px solid var(--purple-line)',
+          display: 'flex', alignItems: 'center', gap: 12,
+          background: 'linear-gradient(180deg, rgba(0,252,143,0.08), transparent)'
+        }}>
+            <div style={{
+            width: 36, height: 36, borderRadius: 10,
+            background: 'var(--mint)', color: 'var(--purple)',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            fontWeight: 800, letterSpacing: '-0.04em'
+          }}>N</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 15, fontWeight: 600 }}>NEXT AI</div>
+              <div style={{ fontSize: 11, color: 'var(--mint)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--mint)' }} />
+                ONLINE · LIVE PRODUCT DEMO
+              </div>
+            </div>
+            <button onClick={() => setOpen(false)} style={{ color: 'rgba(255,255,255,0.6)', fontSize: 22, padding: 4 }}>×</button>
+          </div>
+
+          <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {messages.map((m, i) =>
+          <div key={i} style={{
+            alignSelf: m.from === 'user' ? 'flex-end' : 'flex-start',
+            maxWidth: '85%',
+            padding: '12px 14px',
+            borderRadius: 14,
+            fontSize: 14, lineHeight: 1.5,
+            background: m.from === 'user' ? 'var(--mint)' : 'var(--purple-mid)',
+            color: m.from === 'user' ? 'var(--purple)' : 'white',
+            border: m.from === 'user' ? 'none' : '1px solid var(--purple-line)'
+          }}>{m.text}</div>
+          )}
+            {busy &&
+          <div style={{ alignSelf: 'flex-start', padding: '12px 14px', borderRadius: 14, background: 'var(--purple-mid)', display: 'inline-flex', gap: 4 }}>
+                <Dot delay={0} /><Dot delay={150} /><Dot delay={300} />
+              </div>
+          }
+            {showLeadCapture &&
+          <div style={{
+            marginTop: 8, padding: 16,
+            background: 'rgba(255,180,0,0.08)',
+            border: '1px solid rgba(255,180,0,0.3)',
+            borderRadius: 14
+          }}>
+                <div className="eyebrow gold" style={{ marginBottom: 8 }}>NEXT STEP</div>
+                <div style={{ fontSize: 14, lineHeight: 1.5, marginBottom: 12 }}>
+                  Want a real plan? Book a free 30-minute discovery call.
+                </div>
+                <button className="btn btn-gold btn-sm" onClick={() => {go('start');setOpen(false);}}>
+                  Book a call <span className="arr">→</span>
+                </button>
+              </div>
+          }
+          </div>
+
+          <div style={{ padding: '12px 16px', borderTop: '1px solid var(--purple-line)' }}>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
+              {chips.map((c) =>
+            <button key={c.label} onClick={() => {c.action && c.action();send(c.send);}}
+            style={{
+              fontSize: 12, padding: '6px 10px',
+              borderRadius: 999,
+              background: 'transparent',
+              border: '1px solid var(--purple-line)',
+              color: 'rgba(255,255,255,0.85)'
+            }}>{c.label}</button>
+            )}
+            </div>
+            <form onSubmit={(e) => {e.preventDefault();send(text);}} style={{ display: 'flex', gap: 8 }}>
+              <input value={text} onChange={(e) => setText(e.target.value)}
+            placeholder="Ask NEXT AI anything…"
+            style={{
+              flex: 1, background: 'var(--purple)', border: '1px solid var(--purple-line)',
+              color: 'white', padding: '12px 14px', borderRadius: 12, outline: 'none'
+            }} />
+              <button type="submit" className="btn btn-primary btn-sm" disabled={!text.trim() || busy}
+            style={{ padding: '0 16px' }}>
+                <span className="arr">→</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      }
+    </>);
+
+}
+
+function Dot({ delay = 0 }) {
+  return <span style={{
+    width: 6, height: 6, borderRadius: 999, background: 'var(--mint)',
+    animation: 'dotBlink 1s infinite', animationDelay: `${delay}ms`
+  }} />;
+}
+
+/* Hero neural-net (geometric, decorative — not figurative) ------------------ */
+function NeuralBg() {
+  const nodes = [];
+  const cols = 9,rows = 5;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const jitterX = (c * 37 + r * 13) % 17 - 8;
+      const jitterY = (c * 11 + r * 29) % 13 - 6;
+      nodes.push({ x: c * 12 + 4 + jitterX * 0.4, y: r * 18 + 8 + jitterY * 0.3, r: r % 2 === 0 ? 0.6 : 0.4 });
+    }
+  }
+  const edges = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const i = r * cols + c;
+      if (c < cols - 1) edges.push([i, i + 1]);
+      if (r < rows - 1) edges.push([i, i + cols]);
+    }
+  }
+  return (
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden
+    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.7 }}>
+      <defs>
+        <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#00FC8F" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#00FC8F" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="100" height="100" fill="url(#glow)" />
+      {edges.map(([a, b], i) => {
+        const A = nodes[a],B = nodes[b];
+        return <line key={i} x1={A.x} y1={A.y} x2={B.x} y2={B.y}
+        stroke="#00FC8F" strokeOpacity={i % 17 / 80 + 0.05} strokeWidth="0.08" />;
+      })}
+      {nodes.map((n, i) =>
+      <circle key={i} cx={n.x} cy={n.y} r={n.r}
+      fill="#00FC8F"
+      opacity={i % 7 / 12 + 0.25}>
+          <animate attributeName="opacity" values={`${i % 7 / 12 + 0.2};${i % 7 / 12 + 0.6};${i % 7 / 12 + 0.2}`} dur={`${3 + i % 5}s`} repeatCount="indefinite" />
+        </circle>
+      )}
+    </svg>);
+
+}
+
+Object.assign(window, { Nav, Footer, FloatingWhatsApp, ChatBot, WhatsAppGlyph, NeuralBg, Logo, PAGE_MAP });
+
+</script>
+  <script type="text/babel" data-source="home.jsx">
+/* ===== home.jsx ===== */
+/* HOME ---------------------------------------------------------------------- */
+const { useState: useStateH } = React;
+
+function Home({ go }) {
+  return (
+    <div className="page">
+      {/* Fixed neural clusters — portaled to body so they're not trapped by .page's transform */}
+      <NeuralScrollClusters />
+
+      {/* Hero */}
+      <section className="neural-hero-section" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+        <NeuralBg />
+        <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
+
+        <div style={{
+          position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)',
+          width: 800, height: 800,
+          background: 'radial-gradient(circle, rgba(0,252,143,0.12), transparent 60%)',
+          filter: 'blur(60px)', pointerEvents: 'none'
+        }} />
+        <div className="wrap" style={{ position: 'relative', padding: '120px 24px 80px', textAlign: 'center', zIndex: 2 }}>
+          <div className="tag neural-fade-in" style={{ marginBottom: 28, animationDelay: '0.1s' }}>
+            <span className="dot" /> AI & DIGITAL TRANSFORMATION · EAST AFRICA
+          </div>
+          <div className="neural-text-container">
+            <h1 className="h-display neural-text-title" style={{ marginBottom: 24 }}>
+              Africa's Intelligent<br />
+              Future <span style={{ color: 'var(--mint)', fontStyle: 'italic', fontWeight: 600 }}>Starts Here.</span>
+            </h1>
+          </div>
+          <div className="neural-subtitle-container">
+            <p className="lede neural-subtitle-text" style={{ margin: '0 auto 40px', maxWidth: 640 }}>
+              We help <span className="highlight">African organizations</span> transform their operations through <span className="highlight">AI, automation, and intelligent digital systems</span> — so they can <span className="highlight">lead, not just survive</span>.
+            </p>
+          </div>
+          <div className="row cta-stack neural-fade-in" style={{ justifyContent: 'center', animationDelay: '0.8s' }}>
+            <button className="btn btn-primary" onClick={() => go('start')}>
+              Start Your Transformation <span className="arr">→</span>
+            </button>
+            <button className="btn btn-ghost" onClick={() => go('work')}>See Our Work</button>
+          </div>
+
+          <div className="neural-fade-in" style={{
+            marginTop: 64, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 32,
+            color: 'rgba(255,255,255,0.5)', fontSize: 12, letterSpacing: '0.16em', textTransform: 'uppercase',
+            animationDelay: '1s'
+          }}>
+            <span>Trusted across</span>
+            <span>Uganda</span><span>Kenya</span><span>Rwanda</span><span>Tanzania</span><span>Ethiopia</span>
+          </div>
+
+          {/* Partner / client logos placeholder strip */}
+          <div className="neural-fade-in" style={{
+            marginTop: 32, display: 'grid', gap: 16,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', maxWidth: 1000, marginLeft: 'auto', marginRight: 'auto',
+            animationDelay: '1.2s'
+          }}>
+            {[1,2,3,4,5].map(n => (
+              <div key={n} className="imgph" style={{ aspectRatio: '5/2', borderRadius: 8 }}>
+                <span className="lbl">// Logo {n}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Problem */}
+      <section className="section dark" style={{ borderTop: '1px solid var(--purple-line)' }}>
+        <div className="wrap">
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 64, alignItems: 'flex-end' }} className="grid-stack">
+            <h2 className="h-1">Most African organizations are running <span style={{ color: 'var(--mint)' }}>2005 systems</span> in a 2026 world.</h2>
+            <p className="body" style={{ maxWidth: 480 }}>
+              Manual processes. Disconnected teams. Missed opportunities. NEXT exists to close that gap — permanently.
+            </p>
+          </div>
+
+          <div style={{
+            marginTop: 64,
+            display: 'grid', gap: 16,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))'
+          }}>
+            {[
+            { stat: '78%', body: 'of African organizations still rely on manual processes for core operations.' },
+            { stat: '3×', body: 'more efficient — and 2× more competitive — for organizations that go intelligent.' },
+            { stat: '60%', body: 'reduction in operational waste delivered by NEXT engagements.' }].
+            map((s) =>
+            <div key={s.stat} className="card">
+                <div style={{ fontSize: 'clamp(56px, 6vw, 84px)', fontWeight: 700, letterSpacing: '-0.04em', color: 'var(--mint)', lineHeight: 1 }}>
+                  {s.stat}
+                </div>
+                <p className="body" style={{ marginTop: 16, marginBottom: 0 }}>{s.body}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Services */}
+      <section className="section light">
+        <div className="wrap">
+          <div style={{ marginBottom: 56, maxWidth: 720 }}>
+            <div className="eyebrow dark" style={{ marginBottom: 16 }}>OUR SERVICES</div>
+            <h2 className="h-1" style={{ color: 'var(--purple)' }}>
+              Everything Your Organization Needs to Transition Into the Intelligent Era.
+            </h2>
+          </div>
+          <div style={{
+            display: 'grid', gap: 16,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))'
+          }}>
+            {SERVICES.map((s, i) =>
+            <button key={s.id} onClick={() => go('what')} className="card-light" style={{ textAlign: 'left', cursor: 'pointer' }}>
+                <div style={{
+                width: 48, height: 48, borderRadius: 12,
+                background: 'var(--purple)', color: 'var(--mint)',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                fontWeight: 700, fontSize: 14, marginBottom: 20
+              }}>0{i + 1}</div>
+                <h3 className="h-3" style={{ color: 'var(--purple)', marginBottom: 12 }}>{s.title}</h3>
+                <p className="body dark" style={{ margin: 0 }}>{s.lede}</p>
+                <div style={{ marginTop: 24, color: 'var(--purple)', fontWeight: 600, fontSize: 14 }}>
+                  Learn more <span style={{ color: 'var(--mint)' }}>→</span>
+                </div>
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Process */}
+      <section className="section dark" style={{ position: 'relative', overflow: 'hidden' }}>
+        <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.4 }} />
+        <div className="wrap" style={{ position: 'relative' }}>
+          <div className="eyebrow" style={{ marginBottom: 16 }}>HOW NEXT WORKS</div>
+          <h2 className="h-1" style={{ marginBottom: 56, maxWidth: 800 }}>From Where You Are. To Where You Need to Be.</h2>
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+            {PROCESS.map((p, i) =>
+            <div key={p.title} style={{ position: 'relative' }}>
+                <div style={{
+                fontSize: 13,
+                color: 'var(--mint)', fontFamily: 'JetBrains Mono, monospace',
+                marginBottom: 16, lineHeight: "2", letterSpacing: "2.6px", padding: "0px", textAlign: "left"
+              }}>STEP 0{i + 1}</div>
+                <div style={{
+                fontWeight: 700,
+                letterSpacing: '-0.06em', lineHeight: 1, color: 'white',
+                marginBottom: 12, height: "84px", width: "258px", fontSize: "66px"
+              }}>{p.title}</div>
+                <p className="body" style={{ marginTop: 0 }}>{p.body}</p>
+                {i < PROCESS.length - 1 &&
+              <div className="step-arr" style={{
+                position: 'absolute', top: 32, right: -8,
+                color: 'var(--mint)', opacity: 0.4, textAlign: "right", letterSpacing: "29.5px", fontSize: "25px", lineHeight: "3.25"
+              }}>→</div>
+              }
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Impact numbers */}
+      <section className="section white">
+        <div className="wrap">
+          <div className="eyebrow dark" style={{ marginBottom: 16 }}>IMPACT IN NUMBERS</div>
+          <div style={{
+            marginTop: 32,
+            display: 'grid', gap: 32,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))'
+          }}>
+            {[
+            ['50+', 'Organizations Transformed'],
+            ['500+', 'Team Members Trained in AI'],
+            ['100+', 'Systems Built & Deployed'],
+            ['5', 'Countries Served']].
+            map(([n, l]) =>
+            <div key={l} style={{ borderTop: '1px solid rgba(20,0,53,0.15)', paddingTop: 24 }}>
+                <div style={{ fontSize: 'clamp(64px, 7vw, 104px)', fontWeight: 700, color: 'var(--purple)', letterSpacing: '-0.04em', lineHeight: 1 }}>{n}</div>
+                <div style={{ marginTop: 12, fontSize: 14, fontWeight: 500, color: 'var(--muted-on-light)' }}>{l}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Work */}
+      <section className="section dark">
+        <div className="wrap">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40, flexWrap: 'wrap', gap: 16 }}>
+            <div>
+              <div className="eyebrow" style={{ marginBottom: 16 }}>FEATURED WORK</div>
+              <h2 className="h-1" style={{ maxWidth: 600 }}>Proof, not promises.</h2>
+            </div>
+            <button className="btn btn-ghost btn-sm" onClick={() => go('work')}>See all case studies <span className="arr">→</span></button>
+          </div>
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
+            {CASES.slice(0, 3).map((c) => <CaseCard key={c.title} c={c} go={go} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* Industries */}
+      <section className="section light">
+        <div className="wrap">
+          <div className="eyebrow dark" style={{ marginBottom: 16 }}>WHO WE SERVE</div>
+          <h2 className="h-1" style={{ color: 'var(--purple)', marginBottom: 40, maxWidth: 700 }}>
+            Built for the organizations rebuilding Africa.
+          </h2>
+          <div style={{
+            display: 'grid', gap: 12,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))'
+          }}>
+            {INDUSTRIES.map((i) =>
+            <button key={i.title} onClick={() => go('who')} className="card-light"
+            style={{ textAlign: 'left', padding: 0, cursor: 'pointer', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                {i.image ? (
+                  <img src={i.image} alt={i.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+                ) : (
+                  <div className="imgph light" style={{ aspectRatio: '4/3', borderRadius: 0, border: 0 }}>
+                    <span className="lbl">// Image — {i.title}</span>
+                  </div>
+                )}
+                <div style={{ padding: 24 }}>
+                  <div style={{ fontSize: 22, fontWeight: 600, color: 'var(--purple)', letterSpacing: '-0.02em' }}>{i.title}</div>
+                  <div style={{ marginTop: 8, fontSize: 13, color: 'var(--muted-on-light)' }}>{i.short}</div>
+                </div>
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Training Spotlight */}
+      <section className="section dark" style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          position: 'absolute', top: -100, right: -100,
+          width: 500, height: 500,
+          background: 'radial-gradient(circle, rgba(255,180,0,0.18), transparent 60%)',
+          filter: 'blur(60px)'
+        }} />
+        <div className="wrap" style={{ position: 'relative' }}>
+          <div className="tag gold" style={{ marginBottom: 20 }}><span className="dot" /> NEXT AI TRAINING</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: 48, alignItems: 'center' }} className="grid-stack">
+            <h2 className="h-1">Is Your Team Ready for the Age of AI? <span style={{ color: 'var(--gold)' }}>We'll Get Them There.</span></h2>
+            <div>
+              <p className="body" style={{ marginTop: 0 }}>
+                Practical, hands-on AI education designed for African professionals — from executive seminars to 3-day transformation bootcamps.
+              </p>
+              <button className="btn btn-gold" style={{ marginTop: 16 }} onClick={() => go('training')}>
+                See upcoming sessions <span className="arr">→</span>
+              </button>
+            </div>
+          </div>
+          <div style={{
+            marginTop: 48, display: 'grid', gap: 12,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))'
+          }}>
+            {UPCOMING_TRAINING.slice(0, 3).map((t) =>
+            <div key={t.title} className="card" style={{ borderColor: 'rgba(255,180,0,0.25)', padding: 0, overflow: 'hidden' }}>
+                {t.image ? (
+                  <img src={t.image} alt={t.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
+                ) : (
+                  <div className="imgph" style={{ aspectRatio: '16/9', borderRadius: 0, border: 0 }}>
+                    <span className="lbl">// Image — {t.title}</span>
+                  </div>
+                )}
+                <div style={{ padding: 24 }}>
+                  <div className="mono" style={{ color: 'var(--gold)', marginBottom: 12 }}>{t.date.toUpperCase()} · {t.format.toUpperCase()}</div>
+                  <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>{t.title}</div>
+                  <button className="btn btn-ghost btn-sm" onClick={() => go('training')}>Register <span className="arr">→</span></button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section style={{ background: 'var(--purple)', padding: '120px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
+          width: 800, height: 800,
+          background: 'radial-gradient(circle, rgba(255,180,0,0.12), transparent 60%)',
+          filter: 'blur(60px)'
+        }} />
+        <div className="wrap" style={{ position: 'relative' }}>
+          <h2 className="h-display" style={{ maxWidth: 1000, margin: '0 auto 24px' }}>
+            Your Organization's Transformation Starts with <span style={{ color: 'var(--gold)' }}>One Conversation.</span>
+          </h2>
+          <p className="lede" style={{ margin: '0 auto 40px', maxWidth: 640 }}>
+            Take the free AI Readiness Assessment and discover exactly where your organization stands — and what comes next.
+          </p>
+          <button className="btn btn-gold" onClick={() => go('start')}>
+            Take the Free Assessment <span className="arr">→</span>
+          </button>
+        </div>
+      </section>
+    </div>);
+
+}
+
+function CaseCard({ c, go }) {
+  return (
+    <button onClick={() => go('work')} className="card" style={{ textAlign: 'left', cursor: 'pointer', padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      {c.image ? (
+        <img src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+      ) : (
+        <div className="imgph mint" style={{ aspectRatio: '4/3', borderRadius: 0, border: 0 }}>
+          <span className="lbl">// {c.imgLabel}</span>
+        </div>
+      )}
+      <div style={{ padding: 24 }}>
+        <div className="mono" style={{ color: 'var(--mint)', marginBottom: 8 }}>{c.industry.toUpperCase()}</div>
+        <div style={{ fontSize: 20, fontWeight: 600, marginBottom: 12, letterSpacing: '-0.01em' }}>{c.title}</div>
+        <p className="body" style={{ margin: 0 }}>{c.preview}</p>
+        <div style={{ marginTop: 20, fontSize: 14, fontWeight: 600, color: 'var(--mint)' }}>Read the story →</div>
+      </div>
+    </button>);
+
+}
+
+const SERVICES = [
+{ id: 'ai-integration', title: 'AI Integration & Automation', lede: 'Connect your operations to AI. Automate the work that slows you down.', image: 'assets/ai-integration-automation.jpg' },
+{ id: 'infra', title: 'Digital Infrastructure', lede: 'Build the digital foundation your organization needs to operate at scale.' },
+{ id: 'training', title: 'AI Training & Education', lede: 'Equip your team to think, work, and lead in the age of AI.' },
+{ id: 'media', title: 'Creative AI Media', lede: 'Tell your story with AI-powered content, campaigns, and digital storytelling.' },
+{ id: 'consulting', title: 'Smart Operations Consulting', lede: 'Redesign your operations for intelligence, speed, and efficiency.' }];
+
+const PROCESS = [
+{ title: 'ASSESS', body: 'We start by understanding your organization — your systems, your gaps, and your goals.' },
+{ title: 'DESIGN', body: 'We build a custom transformation roadmap that fits your reality and your ambition.' },
+{ title: 'BUILD', body: 'We implement AI systems, digital tools, and intelligent workflows tailored to your needs.' },
+{ title: 'TRANSFORM', body: 'Your organization emerges more efficient, more capable, and more future-ready.' }];
+
+const INDUSTRIES = [
+{ title: 'NGOs & Development', short: 'Donor reporting, impact, field teams.', image: 'assets/ngo-team-data-analysis.jpg' },
+{ title: 'Schools & Universities', short: 'LMS, AI literacy, admin automation.', image: 'assets/school-classroom-teacher.jpg' },
+{ title: 'Churches & Faith', short: 'Members, giving, communication.', image: 'assets/church-building.jpg' },
+{ title: 'Corporations', short: 'CRM, AI service, ops automation.', image: 'assets/corporate-collaboration.jpg' },
+{ title: 'Government', short: 'Service delivery, citizen comms.', image: 'assets/government-meeting.jpg' },
+{ title: 'Healthcare', short: 'Patient flow, comms, dashboards.', image: 'assets/healthcare-digital-health.jpg' }];
+
+const CASES = [
+{ title: 'A school of 2,400 students switches to AI-powered reporting and saves 100 admin hours a month',
+  industry: 'Schools', imgLabel: 'Image — school staff collaborating with digital dashboards',
+  image: 'assets/school-dashboard-team.jpg',
+  preview: 'A custom learning management system with AI attendance tracking, fee management, and real-time parent communication.' },
+{ title: 'A 40-school district replaces paper attendance with one dashboard',
+  industry: 'Schools', imgLabel: 'Image — secondary school staff using LMS, Mbarara',
+  image: 'assets/school-district-collaboration.jpg',
+  preview: 'A regional school network in Western Uganda automated attendance, parent communication, and admin reporting in 12 weeks.' },
+{ title: 'How a national NGO cut donor-report turnaround from 3 weeks to 2 days',
+  industry: 'NGOs', imgLabel: 'Image — programme officer with field tablet',
+  image: 'assets/ngo-field-officer-tablet.jpg',
+  preview: 'Beneficiary data, M&E, and donor dashboards unified into one intelligent system across 7 field offices.' },
+{ title: 'A church federation moves giving and member care online — without losing the human touch',
+  industry: 'Churches', imgLabel: 'Image — congregation, multi-campus deployment',
+  preview: 'Custom church management platform with AI-assisted pastoral communication for 14 congregations.' },
+{ title: 'Hospital triage WhatsApp bot handles 8,000 patient queries a month',
+  industry: 'Healthcare', imgLabel: 'Image — clinic staff, Kampala teaching hospital',
+  preview: 'A bilingual WhatsApp triage assistant deflects routine queries and books appointments — freeing nurses for patients.' },
+{ title: 'A government agency goes paperless on citizen service requests',
+  industry: 'Government', imgLabel: 'Image — public service desk modernization',
+  preview: 'Digital service delivery and citizen communication platform deployed across 4 regional offices.' },
+{ title: 'A regional retailer turns WhatsApp into its highest-converting sales channel',
+  industry: 'Corporations', imgLabel: 'Image — operations team reviewing CRM dashboards',
+  preview: 'AI customer service + sales intelligence layered onto existing WhatsApp Business — orders up 38%.' }];
+
+const UPCOMING_TRAINING = [
+{ title: 'AI Executive Seminar', date: 'Jun 14, 2026', format: 'Kampala · In-person', image: 'assets/next-logo-executive-seminar.png' },
+{ title: 'AI for Schools (2 Days)', date: 'Jun 22, 2026', format: 'Nairobi · In-person', image: 'assets/ai-schools-robot-teaching.jpg' },
+{ title: 'AI Transformation Bootcamp', date: 'Jul 08, 2026', format: 'Kigali · 3 days', image: 'assets/ai-bootcamp-kampala.png' },
+{ title: 'AI Staff Workshop', date: 'Jul 19, 2026', format: 'Online · Live' }];
+
+/* NeuralCluster — small animated neural net for hero corners ---------------- */
+function NeuralScrollClusters() {
+  const [container] = React.useState(() => {
+    let el = document.getElementById('neural-scroll-portal');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'neural-scroll-portal';
+      el.className = 'neural-scroll-clusters';
+      document.body.appendChild(el);
+    }
+    return el;
+  });
+  React.useEffect(() => {
+    return () => {
+      // Keep the node mounted; just don't clean up so it persists across re-renders
+    };
+  }, []);
+  return ReactDOM.createPortal(
+    <React.Fragment>
+      <div className="neural-network-cluster left-top"><NeuralCluster seed={1} /></div>
+      <div className="neural-network-cluster left-bottom"><NeuralCluster seed={2} /></div>
+      <div className="neural-network-cluster right-top"><NeuralCluster seed={3} /></div>
+      <div className="neural-network-cluster right-bottom"><NeuralCluster seed={4} /></div>
+    </React.Fragment>,
+    container
+  );
+}
+
+function NeuralCluster({ seed = 1 }) {
+  // Deterministic pseudo-random based on seed
+  const rand = (i) => {
+    const x = Math.sin(seed * 100 + i) * 10000;
+    return x - Math.floor(x);
+  };
+  const nodes = Array.from({ length: 12 }, (_, i) => ({
+    x: 10 + rand(i) * 80,
+    y: 10 + rand(i + 100) * 80,
+    r: 1.5 + rand(i + 200) * 2,
+    delay: rand(i + 300) * 4
+  }));
+  const edges = [];
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 35) edges.push([i, j, dist]);
+    }
+  }
+  return (
+    <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ overflow: 'visible' }}>
+      {edges.map(([a, b, d], i) => (
+        <line key={i} x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
+          stroke="#00FC8F" strokeOpacity={Math.max(0.05, 0.3 - d / 100)} strokeWidth="0.25">
+          <animate attributeName="stroke-opacity"
+            values={`${Math.max(0.05, 0.15 - d / 200)};${Math.max(0.1, 0.4 - d / 100)};${Math.max(0.05, 0.15 - d / 200)}`}
+            dur={`${3 + (i % 4)}s`} repeatCount="indefinite" />
+        </line>
+      ))}
+      {nodes.map((n, i) => (
+        <circle key={i} cx={n.x} cy={n.y} r={n.r} fill="#00FC8F">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur={`${2 + (i % 3)}s`}
+            begin={`${n.delay}s`} repeatCount="indefinite" />
+          <animate attributeName="r" values={`${n.r};${n.r * 1.5};${n.r}`} dur={`${2 + (i % 3)}s`}
+            begin={`${n.delay}s`} repeatCount="indefinite" />
+        </circle>
+      ))}
+    </svg>
+  );
+}
+
+Object.assign(window, { Home, CaseCard, NeuralCluster, NeuralScrollClusters, SERVICES, PROCESS, INDUSTRIES, CASES, UPCOMING_TRAINING });
+</script>
+  <script type="text/babel" data-source="pages-a.jsx">
+/* ===== pages-a.jsx ===== */
+/* What We Do · Who We Serve · Our Work -------------------------------------- */
+
+const SERVICE_DETAILS = [
+  {
+    id: 'ai-integration',
+    n: '01',
+    title: 'AI Integration & Automation',
+    image: 'assets/ai-integration-automation.jpg',
+    what: "We connect your organization's core operations to the power of artificial intelligence. From AI customer support bots to intelligent reporting systems, we automate the work that slows you down and put smart tools in the hands of your team.",
+    get: [
+      'AI-powered WhatsApp bots for customer communication',
+      'Automated reporting and data dashboards',
+      'CRM automation and intelligent follow-up systems',
+      'AI scheduling, booking, and workflow automation',
+      'AI analytics — real-time insights on your operations',
+    ],
+    best: 'Businesses, NGOs, hospitals, and schools that want to reduce manual work and respond to people faster and smarter.',
+  },
+  {
+    id: 'infra',
+    n: '02',
+    title: 'Digital Infrastructure',
+    image: 'assets/digital-infrastructure.jpg',
+    what: 'We build the digital foundation your organization needs to operate at scale. From websites and portals to full internal operating systems, we create the infrastructure that runs your organization intelligently.',
+    get: [
+      'Professional websites — fast, mobile-first, conversion-optimized',
+      'Portals and dashboards — internal management systems',
+      'LMS platforms — learning management systems for schools and training organizations',
+      'NGO & church management systems',
+      'HR, finance, and operations platforms',
+      'Mobile applications',
+    ],
+    best: 'Any organization that needs a strong digital presence and internal systems to manage their operations professionally.',
+  },
+  {
+    id: 'training',
+    n: '03',
+    title: 'AI Training & Education',
+    image: 'assets/ai-training-education.jpg',
+    what: 'We equip your team, leadership, and organization to understand, adopt, and leverage AI effectively. This is not generic tech training — it is practical, hands-on AI education designed for African professionals and institutions.',
+    get: [
+      'Executive AI Seminars — strategic understanding for leadership',
+      'Staff AI Workshops — hands-on tools and productivity training',
+      'AI for Schools programs — curriculum and teacher training',
+      'AI Literacy Bootcamps — from beginner to competent in 2 days',
+      'Custom AI onboarding for newly deployed systems',
+    ],
+    best: 'Organizations rolling out new AI systems, schools building AI literacy programs, and leadership teams preparing for digital transformation.',
+  },
+  {
+    id: 'media',
+    n: '04',
+    title: 'Creative AI Media',
+    image: 'assets/creative-ai-media.jpg',
+    what: 'We help organizations tell their stories more powerfully using AI-assisted content systems, media production, and digital campaigns. We combine strategic storytelling with AI production tools to create content that moves people.',
+    get: [
+      'AI-powered content strategy and calendar systems',
+      'AI-assisted video production and editing workflows',
+      'Brand identity and messaging systems',
+      'Social media content automation',
+      'Campaign generation and digital storytelling',
+    ],
+    best: 'NGOs, churches, schools, and brands that want to amplify their communication and tell their stories more effectively.',
+  },
+  {
+    id: 'consulting',
+    n: '05',
+    title: 'Smart Operations Consulting',
+    image: 'assets/smart-operations-consulting.jpg',
+    what: "We map, analyze, and redesign your organization's operations for intelligence, speed, and efficiency. We don't just observe — we build. Every consultation ends with a clear transformation roadmap and the systems to execute it.",
+    get: [
+      'Organizational intelligence audit — where are you losing time and money?',
+      'AI workflow mapping — which processes should be automated?',
+      'Digital transition planning — how do you move from manual to intelligent?',
+      'Systems optimization — restructure operations for peak performance',
+      'Ongoing advisory — NEXT as your permanent strategic technology partner',
+    ],
+    best: 'Organizations undergoing change, scaling up, or preparing for digital transformation who need expert strategic guidance.',
+  },
+];
+
+function WhatWeDo({ go }) {
+  return (
+    <div className="page">
+      <PageHero
+        eyebrow="WHAT WE DO"
+        h1={<>We Don't Just Implement Technology.<br/><span style={{ color: 'var(--mint)' }}>We Transform Organizations.</span></>}
+        sub="Every service NEXT delivers is designed with one goal: to move your organization from where it is today to where it needs to be tomorrow."
+      />
+
+      {/* Anchor nav */}
+      <section className="section deep tight" style={{ paddingTop: 0, position: 'sticky', top: 72, zIndex: 10, background: 'rgba(10,0,32,0.85)', backdropFilter: 'blur(14px)', borderBottom: '1px solid var(--purple-line)' }}>
+        <div className="wrap" style={{ display: 'flex', gap: 8, overflowX: 'auto', padding: '20px 24px' }}>
+          {SERVICE_DETAILS.map(s => (
+            <a key={s.id} href={`#${s.id}`} style={{
+              padding: '10px 16px', borderRadius: 999,
+              border: '1px solid var(--purple-line)',
+              fontSize: 13, whiteSpace: 'nowrap',
+              color: 'rgba(255,255,255,0.85)',
+            }}>
+              <span style={{ color: 'var(--mint)', marginRight: 6 }}>{s.n}</span>{s.title}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {SERVICE_DETAILS.map((s, i) => (
+        <section key={s.id} id={s.id} className={`section ${i % 2 === 0 ? 'dark' : 'deep'}`}>
+          <div className="wrap">
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 0.4fr) minmax(0, 1fr)', gap: 64 }} className="grid-stack">
+              <div>
+                <div className="mono" style={{ color: 'var(--mint)', marginBottom: 12 }}>SERVICE {s.n}</div>
+                <h2 className="h-1" style={{ marginBottom: 32 }}>{s.title}</h2>
+                {s.image ? (
+                  <img src={s.image} alt={s.title} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', borderRadius: 'var(--radius)', display: 'block' }} />
+                ) : (
+                  <div className="imgph mint" style={{ aspectRatio: '4/5' }}>
+                    <span className="lbl">// Image — {s.title}</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                <div className="eyebrow" style={{ marginBottom: 12 }}>WHAT IT IS</div>
+                <p className="body" style={{ fontSize: 18, lineHeight: 1.6, color: 'rgba(255,255,255,0.88)', marginBottom: 40 }}>{s.what}</p>
+
+                <div className="eyebrow" style={{ marginBottom: 16 }}>WHAT YOU GET</div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 40px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {s.get.map(item => (
+                    <li key={item} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <span style={{ color: 'var(--mint)', fontWeight: 700, marginTop: 4 }}>—</span>
+                      <span className="body" style={{ color: 'rgba(255,255,255,0.88)' }}>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="eyebrow" style={{ marginBottom: 12 }}>BEST FOR</div>
+                <p className="body" style={{ marginBottom: 32 }}>{s.best}</p>
+
+                <button className="btn btn-primary" onClick={() => go('start')}>
+                  Talk about this for your team <span className="arr">→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      ))}
+
+      {/* Pricing philosophy */}
+      <section className="section light">
+        <div className="wrap" style={{ maxWidth: 880 }}>
+          <div className="eyebrow dark" style={{ marginBottom: 16 }}>PRICING PHILOSOPHY</div>
+          <h2 className="h-2" style={{ color: 'var(--purple)', marginBottom: 24 }}>How NEXT Prices.</h2>
+          <p className="body dark" style={{ fontSize: 18, lineHeight: 1.6 }}>
+            NEXT does not publish fixed prices because every organization is different. What we do promise is this: <strong style={{ color: 'var(--purple)' }}>every investment in NEXT is designed to return more than it costs</strong> — in time saved, capacity gained, and impact amplified. Contact us for a custom proposal.
+          </p>
+          <button className="btn btn-dark" onClick={() => go('start')} style={{ marginTop: 32 }}>
+            Request a custom proposal <span className="arr">→</span>
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* WHO WE SERVE -------------------------------------------------------------- */
+const AUDIENCES = [
+  {
+    id: 'ngo', 
+    title: 'NGOs & Development Organizations', 
+    accent: 'var(--mint)',
+    image: 'assets/ngo-team-data-analysis.jpg',
+    challenge: "You're working to change lives — but your internal systems are fragmented, your reporting is manual, your communication is scattered, and your team spends more time managing data than delivering impact.",
+    helps: [
+      'Automated donor reporting and impact dashboards',
+      'Beneficiary management systems',
+      'AI communication tools for field teams and partners',
+      'Digital grant tracking and compliance systems',
+      'Staff AI training to multiply organizational capacity',
+    ],
+  },
+  {
+    id: 'schools', 
+    title: 'Schools & Universities', 
+    accent: 'var(--mint)',
+    image: 'assets/school-classroom-teacher.jpg',
+    challenge: 'Your institution is preparing students for a world being reshaped by AI — but your systems, curriculum, and staff may not yet be ready for that world. You need to modernize without disrupting what makes you great.',
+    helps: [
+      'Learning Management Systems (LMS) with AI integration',
+      'AI literacy programs for teachers and students',
+      'Administrative automation — admissions, attendance, communications',
+      'Parent communication portals',
+      'Digital content creation systems for educators',
+    ],
+  },
+  {
+    id: 'churches', 
+    title: 'Churches & Faith Organizations', 
+    accent: 'var(--gold)',
+    image: 'assets/church-building.jpg',
+    challenge: 'Your congregation is spread across multiple locations, your communication is inconsistent, your giving and records systems are manual, and your ability to serve and engage your community is limited by outdated tools.',
+    helps: [
+      'Church management systems — members, giving, attendance',
+      'AI communication tools for pastors and leaders',
+      'Digital giving and stewardship platforms',
+      'Content creation systems for sermons, events, and campaigns',
+      'AI-powered community engagement tools',
+    ],
+  },
+  {
+    id: 'corp', 
+    title: 'Corporations & Businesses', 
+    accent: 'var(--mint)',
+    image: 'assets/corporate-collaboration.jpg',
+    challenge: "Your competitors are becoming smarter, faster, and more efficient. Customers expect instant responses, seamless experiences, and intelligent service. If your operations haven't evolved, you're already behind.",
+    helps: [
+      'AI customer service and WhatsApp automation',
+      'Operations and workflow automation',
+      'CRM and sales intelligence systems',
+      'HR and team management platforms',
+      'AI analytics and business intelligence dashboards',
+    ],
+  },
+  {
+    id: 'gov', 
+    title: 'Government & Public Sector', 
+    accent: 'var(--gold)',
+    image: 'assets/government-meeting.jpg',
+    challenge: 'Government institutions face massive service demand with limited resources. Manual systems create bottlenecks, reduce accountability, and slow service delivery to citizens.',
+    helps: [
+      'Digital service delivery platforms',
+      'Citizen communication and information systems',
+      'Data management and reporting systems',
+      'Staff AI training and digital literacy programs',
+      'Smart operations consulting for government agencies',
+    ],
+  },
+  {
+    id: 'health', 
+    title: 'Hospitals & Healthcare Organizations', 
+    accent: 'var(--mint)',
+    image: 'assets/healthcare-digital-health.jpg',
+    challenge: 'Healthcare organizations manage enormous amounts of sensitive information across complex workflows. Manual systems create errors, slow response times, and compromise patient experience.',
+    helps: [
+      'Patient management and communication systems',
+      'Automated appointment scheduling and reminders',
+      'Staff communication and coordination platforms',
+      'Health data dashboards and reporting',
+      'AI administrative tools to reduce clinical staff burden',
+    ],
+  },
+];
+
+function WhoWeServe({ go }) {
+  return (
+    <div className="page">
+      <PageHero
+        eyebrow="WHO WE SERVE"
+        h1={<>We Understand Your World.<br/><span style={{ color: 'var(--mint)' }}>Because We Were Built for It.</span></>}
+        sub="When a school principal, NGO director, or church leader lands here, they should immediately feel understood. That feeling is the beginning of trust."
+      />
+
+      <section className="section deep" style={{ paddingTop: 24 }}>
+        <div className="wrap" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {AUDIENCES.map(a => (
+            <a key={a.id} href={`#${a.id}`} className="tag" style={{ background: 'transparent', borderColor: 'var(--purple-line)', color: 'rgba(255,255,255,0.85)' }}>
+              {a.title.split(' & ')[0].toUpperCase()}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {AUDIENCES.map((a, i) => (
+        <section key={a.id} id={a.id} className={`section ${i % 2 === 0 ? 'dark' : 'deep'}`}>
+          <div className="wrap">
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 64, alignItems: 'flex-start' }} className="grid-stack">
+              <div>
+                <div className="mono" style={{ color: a.accent, marginBottom: 12 }}>AUDIENCE 0{i + 1}</div>
+                <h2 className="h-1" style={{ marginBottom: 32 }}>{a.title}</h2>
+                <div className="eyebrow" style={{ color: a.accent, marginBottom: 12 }}>THE CHALLENGE</div>
+                <p className="body" style={{ fontSize: 17, lineHeight: 1.6 }}>{a.challenge}</p>
+              </div>
+              <div>
+                {a.image ? (
+                  <img src={a.image} alt={a.title} style={{ width: '100%', aspectRatio: '5/4', objectFit: 'cover', borderRadius: 'var(--radius)', marginBottom: 24, display: 'block' }} />
+                ) : (
+                  <div className="imgph mint" style={{ aspectRatio: '5/4', marginBottom: 24 }}>
+                    <span className="lbl">// Image — {a.title}</span>
+                  </div>
+                )}
+                <div className="eyebrow" style={{ color: a.accent, marginBottom: 16 }}>HOW NEXT HELPS</div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {a.helps.map(h => (
+                    <li key={h} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <span style={{ color: a.accent, fontWeight: 700, marginTop: 4 }}>—</span>
+                      <span className="body" style={{ color: 'rgba(255,255,255,0.88)' }}>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button className="btn btn-primary" style={{ marginTop: 32 }} onClick={() => go('start')}>
+                  Get a tailored plan <span className="arr">→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+/* OUR WORK ------------------------------------------------------------------ */
+
+const CASES = [
+  {
+    title: 'A school of 2,400 students switches to AI-powered reporting and saves 100 admin hours a month',
+    industry: 'Schools',
+    image: 'assets/school-dashboard-team.jpg',
+    imgLabel: 'Image — school staff collaborating with digital dashboards',
+    preview: 'A custom learning management system with AI attendance tracking, fee management, and real-time parent communication.',
+    results: ['−40% admin time', '+68% parent satisfaction', '12 weeks to live']
+  },
+  {
+    title: 'A 40-school district replaces paper attendance with one dashboard',
+    industry: 'Schools',
+    image: 'assets/school-district-collaboration.jpg',
+    imgLabel: 'Image — secondary school staff using LMS, Mbarara',
+    preview: 'A regional school network in Western Uganda automated attendance, parent communication, and admin reporting in 12 weeks.',
+    results: ['40 schools', 'Real-time data', '12 weeks']
+  },
+  {
+    title: 'How a national NGO cut donor-report turnaround from 3 weeks to 2 days',
+    industry: 'NGOs',
+    image: 'assets/ngo-field-officer-tablet.jpg',
+    imgLabel: 'Image — programme officer with field tablet',
+    preview: 'Beneficiary data, M&E, and donor dashboards unified into one intelligent system across 7 field offices.',
+    results: ['3 weeks → 2 days', '7 field offices', 'Live visibility']
+  },
+  {
+    title: 'A church federation moves giving and member care online — without losing the human touch',
+    industry: 'Churches',
+    image: 'assets/churches-teleconference.jpg',
+    imgLabel: 'Image — congregation, multi-campus deployment',
+    preview: 'Custom church management platform with AI-assisted pastoral communication for 14 congregations.',
+    results: ['14 congregations', '+AI pastoral care', '8 weeks']
+  },
+  {
+    title: 'Hospital triage WhatsApp bot handles 8,000 patient queries a month',
+    industry: 'Healthcare',
+    image: 'assets/healthcare-brain-scan.jpg',
+    imgLabel: 'Image — clinic staff, Kampala teaching hospital',
+    preview: 'AI-powered triage system that triaged patients, answered FAQs, and routed emergencies — all via WhatsApp.',
+    results: ['8,000 queries/mo', '−60% admin calls', '4 weeks']
+  },
+  {
+    title: 'A regional retailer turns WhatsApp into its highest-converting sales channel',
+    industry: 'Corporations',
+    image: 'assets/corporations-tablet.jpg',
+    imgLabel: 'Image — operations team reviewing CRM dashboards',
+    preview: 'AI customer service + sales intelligence layered onto existing WhatsApp Business — orders up 38%.',
+    results: ['+38% orders', 'WhatsApp AI', '6 weeks']
+  }
+];
+
+function OurWork({ go }) {
+  const filters = ['All', 'NGOs', 'Schools', 'Churches', 'Corporations', 'Government', 'Healthcare'];
+  const [filter, setFilter] = useStateH('All');
+  const list = filter === 'All' ? CASES : CASES.filter(c => c.industry === filter);
+
+  return (
+    <div className="page">
+      <PageHero
+        eyebrow="OUR WORK"
+        h1={<>Transformation Is Not a Promise.<br/><span style={{ color: 'var(--mint)' }}>It's a Track Record.</span></>}
+        sub="Every case study tells a transformation story — not a feature showcase. Filter by your industry to see what's possible for organizations like yours."
+      />
+
+      <section className="section dark" style={{ paddingTop: 24 }}>
+        <div className="wrap">
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 40 }}>
+            {filters.map(f => (
+              <button key={f} onClick={() => setFilter(f)}
+                      style={{
+                        padding: '10px 18px', borderRadius: 999,
+                        border: '1px solid ' + (filter === f ? 'var(--mint)' : 'var(--purple-line)'),
+                        background: filter === f ? 'var(--mint-soft)' : 'transparent',
+                        color: filter === f ? 'var(--mint)' : 'rgba(255,255,255,0.85)',
+                        fontSize: 13, fontWeight: 500,
+                      }}>{f}</button>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+            {list.map(c => <FullCase key={c.title} c={c} go={go} />)}
+          </div>
+        </div>
+      </section>
+
+      <section className="section deep">
+        <div className="wrap" style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto' }}>
+          <div className="eyebrow gold" style={{ marginBottom: 16 }}>YOURS COULD BE NEXT</div>
+          <h2 className="h-1" style={{ marginBottom: 24 }}>Want to be the case study other organizations read?</h2>
+          <p className="lede" style={{ margin: '0 auto 32px' }}>
+            Our flagship engagements often start with a single honest conversation about what's broken, what's possible, and what comes next.
+          </p>
+          <button className="btn btn-gold" onClick={() => go('start')}>Start your transformation <span className="arr">→</span></button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function FullCase({ c, go }) {
+  return (
+    <article className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      {c.image ? (
+        <img src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '16/10', objectFit: 'cover', display: 'block' }} />
+      ) : (
+        <div className="imgph mint" style={{ aspectRatio: '16/10', borderRadius: 0, border: 0 }}>
+          <span className="lbl">// {c.imgLabel}</span>
+        </div>
+      )}
+      <div style={{ padding: 28, display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div className="mono" style={{ color: 'var(--mint)', marginBottom: 12 }}>{c.industry.toUpperCase()}</div>
+        <h3 style={{ fontSize: 22, fontWeight: 600, lineHeight: 1.2, marginBottom: 16, letterSpacing: '-0.01em' }}>{c.title}</h3>
+        <p className="body" style={{ flex: 1 }}>{c.preview}</p>
+
+        <div style={{ marginTop: 20, display: 'flex', gap: 24, flexWrap: 'wrap', borderTop: '1px solid var(--purple-line)', paddingTop: 20 }}>
+          {(c.results || ['—40% admin time', '+3× reporting speed', '8 weeks to live']).map(r => (
+            <div key={r}>
+              <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--mint)', letterSpacing: '-0.02em' }}>{r.split(' ')[0]}</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>{r.split(' ').slice(1).join(' ')}</div>
+            </div>
+          ))}
+        </div>
+
+        <button className="btn btn-ghost btn-sm" style={{ marginTop: 24, alignSelf: 'flex-start' }} onClick={() => go('work')}>
+          Read the full story <span className="arr">→</span>
+        </button>
+      </div>
+    </article>
+  );
+}
+
+/* Shared page hero --------------------------------------------------------- */
+function PageHero({ eyebrow, h1, sub }) {
+  return (
+    <section style={{ position: 'relative', overflow: 'hidden', padding: '120px 0 80px' }}>
+      <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.4 }} />
+      <div style={{
+        position: 'absolute', top: '-20%', left: '50%', transform: 'translateX(-50%)',
+        width: 800, height: 600,
+        background: 'radial-gradient(ellipse, rgba(0,252,143,0.14), transparent 60%)',
+        filter: 'blur(60px)',
+      }} />
+      <div className="wrap" style={{ position: 'relative', maxWidth: 1100 }}>
+        <div className="tag" style={{ marginBottom: 24 }}><span className="dot" /> {eyebrow}</div>
+        <h1 className="h-display" style={{ marginBottom: 24 }}>{h1}</h1>
+        <p className="lede" style={{ maxWidth: 720 }}>{sub}</p>
+      </div>
+    </section>
+  );
+}
+
+Object.assign(window, { WhatWeDo, WhoWeServe, OurWork, PageHero });
+
+</script>
+  <script type="text/babel" data-source="pages-b.jsx">
+/* ===== pages-b.jsx ===== */
+/* Training · Insights · About · Start --------------------------------------- */
+const { useState: useStateB } = React;
+
+const PROGRAMS = [
+{
+  n: '01', title: 'AI Executive Seminar', length: 'Half Day · 4 hours',
+  audience: 'CEOs, Directors, Board Members, Senior Leaders',
+  format: 'In-person or Virtual',
+  image: 'assets/next-logo-executive-seminar.png',
+  learn: 'What AI is, what it can do for their organization, how to lead an AI transition, what questions to ask technology partners.',
+  outcome: 'Leadership alignment on AI strategy and readiness.',
+  accent: 'var(--mint)'
+},
+{
+  n: '02', title: 'AI Staff Workshop', length: 'Full Day · 8 hours',
+  audience: 'Operations teams, admin staff, department heads',
+  format: 'In-person',
+  image: 'assets/ai-staff-workshop-network.webp',
+  learn: 'Hands-on AI tools for productivity, automation basics, prompt engineering for daily work.',
+  outcome: 'Team members who can use AI tools immediately after the training.',
+  accent: 'var(--mint)'
+},
+{
+  n: '03', title: 'AI for Schools', length: '2-Day Program',
+  audience: 'Teachers, school administrators, and senior students',
+  format: 'In-person',
+  image: 'assets/ai-schools-robot-teaching.jpg',
+  learn: 'AI literacy, AI in education, responsible AI use, AI tools for teachers.',
+  outcome: 'An AI-literate school culture ready for the future.',
+  accent: 'var(--gold)'
+},
+{
+  n: '04', title: 'AI Transformation Bootcamp', length: '3-Day Intensive',
+  audience: 'Organizations beginning a full digital transformation',
+  format: 'Intensive in-person',
+  image: 'assets/ai-bootcamp-kampala.png',
+  learn: 'Full AI strategy, tool adoption, system design, change management.',
+  outcome: 'An organization with a working AI transition plan and initial tools deployed.',
+  accent: 'var(--gold)'
+}];
+
+
+function Training({ go }) {
+  return (
+    <div className="page">
+      <PageHero
+        eyebrow="NEXT AI TRAINING"
+        h1={<>The Future Belongs to Organizations <span style={{ color: 'var(--gold)' }}>That Learn.</span></>}
+        sub="NEXT AI Training prepares your team for the intelligent era — practically, affordably, and powerfully." />
+      
+
+      <section className="section dark">
+        <div className="wrap">
+          <div className="eyebrow gold" style={{ marginBottom: 16 }}>FOUR PROGRAMS</div>
+          <h2 className="h-2" style={{ marginBottom: 40, maxWidth: 720 }}>Pick the program that meets your team where they are.</h2>
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+            {PROGRAMS.map((p) =>
+            <article key={p.n} className="card" style={{ display: 'flex', flexDirection: 'column', borderColor: 'rgba(255,180,0,0.18)', padding: 0, overflow: 'hidden' }}>
+                {p.image ? (
+                  <img src={p.image} alt={p.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
+                ) : (
+                  <div className="imgph" style={{ aspectRatio: '16/9', borderRadius: 0, border: 0, background: 'repeating-linear-gradient(45deg, rgba(255,180,0,0.10) 0 8px, transparent 8px 16px), var(--purple-deep)' }}>
+                    <span className="lbl" style={{ color: p.accent }}>// Image — {p.title} session</span>
+                  </div>
+                )}
+                <div style={{ padding: 28, display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <div className="mono" style={{ color: p.accent, marginBottom: 16 }}>PROGRAM {p.n} · {p.length.toUpperCase()}</div>
+                <h3 style={{ fontSize: 26, fontWeight: 600, letterSpacing: '-0.02em', marginBottom: 24 }}>{p.title}</h3>
+
+                <Field k="FOR" v={p.audience} />
+                <Field k="FORMAT" v={p.format} />
+                <Field k="WHAT THEY LEARN" v={p.learn} />
+                <Field k="OUTCOME" v={p.outcome} highlight />
+
+                <button className="btn btn-gold btn-sm" style={{ marginTop: 24, alignSelf: 'flex-start' }} onClick={() => go('start')}>
+                  Request this program <span className="arr">→</span>
+                </button>
+                </div>
+              </article>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="section deep">
+        <div className="wrap">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16, marginBottom: 32 }}>
+            <div>
+              <div className="eyebrow" style={{ marginBottom: 12 }}>UPCOMING SESSIONS</div>
+              <h2 className="h-2">Live Training Calendar.</h2>
+            </div>
+            <button className="btn btn-ghost btn-sm" onClick={() => go('start')}>Request a private session <span className="arr">→</span></button>
+          </div>
+
+          <div style={{ border: '1px solid var(--purple-line)', borderRadius: 16, overflow: 'hidden' }}>
+            {UPCOMING_TRAINING.map((t, i) =>
+            <div key={t.title} style={{
+              display: 'grid', gridTemplateColumns: '120px 1fr 1fr auto', gap: 24, alignItems: 'center',
+              padding: '24px 28px',
+              borderTop: i ? '1px solid var(--purple-line)' : 'none'
+            }} className="cal-row">
+                <div className="mono" style={{ color: 'var(--mint)' }}>{t.date.toUpperCase()}</div>
+                <div style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em' }}>{t.title}</div>
+                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>{t.format}</div>
+                <button className="btn btn-primary btn-sm" onClick={() => go('start')}>Register</button>
+              </div>
+            )}
+          </div>
+          <style>{`@media (max-width: 720px) { .cal-row { grid-template-columns: 1fr !important; } }`}</style>
+        </div>
+      </section>
+
+      <section className="section dark" style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          position: 'absolute', top: '-20%', right: '-20%',
+          width: 700, height: 700,
+          background: 'radial-gradient(circle, rgba(255,180,0,0.18), transparent 60%)',
+          filter: 'blur(60px)'
+        }} />
+        <div className="wrap" style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 48, alignItems: 'center' }}>
+          <div>
+            <div className="eyebrow gold" style={{ marginBottom: 16 }}>NEXT AI CERTIFICATION</div>
+            <h2 className="h-1" style={{ marginBottom: 20 }}>The recognized AI training credential in East Africa.</h2>
+            <p className="body" style={{ fontSize: 17 }}>
+              Upon completing any NEXT training program, participants receive a NEXT AI Certification — a digital certificate they can share on LinkedIn and use in their professional profiles.
+            </p>
+          </div>
+          <div style={{
+            background: 'linear-gradient(160deg, var(--purple-deep), var(--purple-mid))',
+            border: '1px solid rgba(255,180,0,0.3)',
+            borderRadius: 24, padding: 32,
+            position: 'relative', overflow: 'hidden'
+          }}>
+            <div className="mono" style={{ color: 'var(--gold)', marginBottom: 24 }}>NEXT AI · CERT-2026-04217</div>
+            <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>This certifies that</div>
+            <div style={{ fontSize: 26, fontWeight: 600, margin: '8px 0 16px', letterSpacing: '-0.02em' }}>Hudson Timothy Tumusiime</div>
+            <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>has completed</div>
+            <div style={{ fontSize: 18, fontWeight: 600, margin: '4px 0 24px', color: 'var(--gold)' }}>AI Transformation Bootcamp</div>
+            <div style={{ borderTop: '1px solid var(--purple-line)', paddingTop: 16, display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>
+              <span>Issued · May 2026</span>
+              <span>nexttransform.africa/cert</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>);
+
+}
+function Field({ k, v, highlight }) {
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <div className="mono" style={{ color: 'rgba(255,255,255,0.5)', marginBottom: 6 }}>{k}</div>
+      <div style={{ fontSize: 14, lineHeight: 1.55, color: highlight ? 'var(--mint)' : 'rgba(255,255,255,0.88)', fontWeight: highlight ? 500 : 400 }}>{v}</div>
+    </div>);
+
+}
+
+/* INSIGHTS ----------------------------------------------------------------- */
+const ARTICLES = [
+{ t: 'What Is AI — And What Can It Actually Do For My Organization?', cat: 'AI Tools & Guides', read: '8 min', date: 'May 2026', big: true, image: 'assets/article-thumb-1.png' },
+{ t: '5 Signs Your Organization Is Ready for AI Transformation', cat: 'Organization Transformation', read: '6 min', date: 'May 2026', image: 'assets/article-thumb-2.png' },
+{ t: 'Why African Organizations Cannot Afford to Wait on AI', cat: 'NEXT Perspectives', read: '5 min', date: 'Apr 2026', image: 'assets/article-thumb-3.png' },
+{ t: 'The Real Cost of Running a Manual Organization in 2026', cat: 'AI in Africa', read: '7 min', date: 'Apr 2026', image: 'assets/article-thumb-4.png' },
+{ t: 'How NEXT Transformed Mbarara Schools Network: A Step-by-Step Story', cat: 'Case Studies', read: '12 min', date: 'Apr 2026', image: 'assets/article-thumb-5.png' }];
+
+const RESOURCES = [
+{ t: 'AI Readiness Checklist', title: 'A self-assessment for your organization', size: 'PDF · 2.4 MB', image: 'assets/insight-cover-1.png' },
+{ t: 'NEXT Guide to AI for NGOs', title: 'Field-tested playbook for development orgs', size: 'PDF · 4.1 MB', image: 'assets/insight-cover-2.png' },
+{ t: 'AI Tools Every Team Should Use in 2026', title: 'A curated stack with use-cases', size: 'PDF · 3.2 MB', image: 'assets/insight-cover-3.png' },
+{ t: 'How to Write an AI Proposal for Your Board', title: 'Template + 14-page guide', size: 'PDF · 1.8 MB', image: 'assets/insight-cover-4.png' }];
+
+
+function Insights({ go }) {
+  const [cat, setCat] = useStateB('All');
+  const cats = ['All', 'AI in Africa', 'Organization Transformation', 'AI Tools & Guides', 'NEXT Perspectives', 'Case Studies'];
+  const list = cat === 'All' ? ARTICLES : ARTICLES.filter((a) => a.cat === cat);
+  return (
+    <div className="page">
+      <PageHero
+        eyebrow="INSIGHTS"
+        h1={<>Thinking Ahead, So Africa <span style={{ color: 'var(--mint)' }}>Doesn't Fall Behind.</span></>}
+        sub="Articles, guides, reports, and resources that are genuinely useful — not content for content's sake." />
+      
+
+      <section className="section dark">
+        <div className="wrap">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 40 }}>
+            {cats.map((c) =>
+            <button key={c} onClick={() => setCat(c)}
+            style={{
+              padding: '10px 16px', borderRadius: 999,
+              border: '1px solid ' + (cat === c ? 'var(--mint)' : 'var(--purple-line)'),
+              background: cat === c ? 'var(--mint-soft)' : 'transparent',
+              color: cat === c ? 'var(--mint)' : 'rgba(255,255,255,0.85)',
+              fontSize: 13
+            }}>{c}</button>
+            )}
+          </div>
+
+          {list[0] && list[0].big &&
+          <article className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 24, display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)' }}>
+              {list[0].image ? (
+                <img src={list[0].image} alt={list[0].t} style={{ width: '100%', minHeight: 320, objectFit: 'cover', display: 'block' }} />
+              ) : (
+                <div className="imgph mint" style={{ minHeight: 320, borderRadius: 0, border: 0 }}>
+                  <span className="lbl">// Cornerstone article — hero illustration</span>
+                </div>
+              )}
+              <div style={{ padding: 40, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div className="mono" style={{ color: 'var(--mint)', marginBottom: 12 }}>CORNERSTONE · {list[0].cat.toUpperCase()}</div>
+                <h2 className="h-2" style={{ marginBottom: 16 }}>{list[0].t}</h2>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>{list[0].date} · {list[0].read} read</div>
+                <button className="btn btn-primary btn-sm" style={{ marginTop: 24, alignSelf: 'flex-start' }}>Read article <span className="arr">→</span></button>
+              </div>
+            </article>
+          }
+
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+            {list.filter((a) => !a.big).map((a) =>
+            <article key={a.t} className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                {a.image ? (
+                  <img src={a.image} alt={a.t} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+                ) : (
+                  <div className="imgph mint" style={{ aspectRatio: '16/10', borderRadius: 0, border: 0 }}>
+                    <span className="lbl">// Article thumbnail — {a.t.slice(0, 38)}{a.t.length > 38 ? '…' : ''}</span>
+                  </div>
+                )}
+                <div style={{ padding: 24 }}>
+                  <div className="mono" style={{ color: 'var(--mint)', marginBottom: 12 }}>{a.cat.toUpperCase()}</div>
+                  <h3 style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.25, marginBottom: 16 }}>{a.t}</h3>
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>{a.date} · {a.read} read</div>
+                </div>
+              </article>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="section deep">
+        <div className="wrap">
+          <div className="eyebrow gold" style={{ marginBottom: 12 }}>FREE RESOURCES</div>
+          <h2 className="h-1" style={{ marginBottom: 24, maxWidth: 700 }}>Take the first step — for free.</h2>
+
+          {/* Admin: drop new PDFs here ------------------------------------ */}
+          <label htmlFor="next-pdf-upload" style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            gap: 10, padding: '32px 24px', marginBottom: 32,
+            border: '1.5px dashed rgba(255,180,0,0.45)',
+            borderRadius: 16, background: 'rgba(255,180,0,0.05)',
+            cursor: 'pointer', textAlign: 'center'
+          }}>
+            <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gold-soft)', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 22 }}>↑</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--gold)' }}>Drop PDFs here to publish for download</div>
+            <div className="mono" style={{ color: 'rgba(255,255,255,0.55)' }}>// ADMIN · accepts .pdf · max 20 MB each</div>
+            <input id="next-pdf-upload" type="file" accept="application/pdf" multiple style={{ display: 'none' }} />
+          </label>
+
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+            {RESOURCES.map((r) =>
+            <div key={r.t} className="card" style={{ borderColor: 'rgba(255,180,0,0.25)', padding: 0, overflow: 'hidden' }}>
+                {r.image ? (
+                  <img src={r.image} alt={r.t} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }} />
+                ) : (
+                  <div className="imgph" style={{ aspectRatio: '3/2', borderRadius: 0, border: 0, background: 'repeating-linear-gradient(45deg, rgba(255,180,0,0.10) 0 8px, transparent 8px 16px), var(--purple-deep)' }}>
+                    <span className="lbl" style={{ color: 'var(--gold)' }}>// PDF cover — {r.t}</span>
+                  </div>
+                )}
+                <div style={{ padding: 24 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--gold-soft)', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, marginBottom: 16 }}>↓</div>
+                  <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>{r.t}</h3>
+                  <p className="body" style={{ marginTop: 0, marginBottom: 16, fontSize: 14 }}>{r.title}</p>
+                  <div className="mono" style={{ color: 'rgba(255,255,255,0.5)', marginBottom: 16 }}>{r.size}</div>
+                  <button className="btn btn-gold btn-sm">Get the PDF</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    </div>);
+
+}
+
+/* ABOUT -------------------------------------------------------------------- */
+const VALUES = [
+['Intelligence', 'We bring deep expertise and rigorous thinking to every engagement.'],
+['Trust', 'We build relationships before we build systems.'],
+['Impact', 'We measure success by the transformation our clients experience.'],
+['Africanism', 'Built for Africa, by Africans, with Africa\u2019s realities at the center.'],
+['Excellence', 'We deliver work we are proud of, every time.']];
+
+const TEAM = [
+['Tumusiime Hudson Timothy', 'Founder & CEO', 'Builds the systems Africa\u2019s most ambitious organizations run on.'],
+['Yiga Patrick Emmanuel', 'Developer', 'Designs the AI workflows that quietly remove a week\u2019s work from a team\u2019s month.'],
+['Kawalya Jessy', 'Trainer', 'Has trained more than 500 East African professionals on practical AI tools.']];
+
+
+function About({ go }) {
+  return (
+    <div className="page">
+      <PageHero
+        eyebrow="ABOUT NEXT"
+        h1={<>We Were Built for <span style={{ color: 'var(--mint)' }}>This Moment.</span></>}
+        sub="People don't hire companies — they hire people they trust and believe in. Here are the people, the story, and the beliefs behind NEXT." />
+      
+
+      <section className="section dark">
+        <div className="wrap" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 0.5fr) minmax(0, 1fr)', gap: 64, alignItems: 'start' }} className="grid-stack">
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>THE NEXT STORY</div>
+            <h2 className="h-2" style={{ marginBottom: 24 }}>Why we exist.</h2>
+            <img src="assets/hudson-founder-photo.jpg" alt="Hudson Timothy Tumusiime, Founder & CEO" style={{ width: '100%', height: 'auto', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '4/5' }} />
+          </div>
+          <div style={{ paddingTop: '52px' }}>
+            <div className="eyebrow mint" style={{ marginBottom: 12 }}>FOUNDER</div>
+            <p className="body" style={{ fontSize: 15, lineHeight: 1.7, marginTop: 0 }}>
+              Hudson Timothy Tumusiime has spent his career at the intersection of communication, technology, and mission. As founder and CEO of NEXT, he is building Africa\u2019s leading AI and digital transformation company — one that doesn\u2019t just consult, but builds real systems that change how organisations operate. He is also the founder and CEO of Charis Creations, a media production and communications company that has worked with some of Uganda\u2019s most influential organisations, churches, and brands. Through that work, he saw the same gap everywhere: powerful organisations running on broken systems. NEXT was born from that frustration — and from the belief that African organisations deserve world-class digital infrastructure. Hudson also serves as Communications Director for Fathers Arise under The Remnant Generation, where he applies the same strategic communication principles he brings to all his work: clarity, systems, and storytelling that moves people to action. He is based in Kampala, Uganda — and he is building for the long term.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section deep">
+        <div className="wrap" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 32 }} className="grid-stack">
+          <div className="card" style={{ padding: 40 }}>
+            <div className="eyebrow gold" style={{ marginBottom: 16 }}>MISSION</div>
+            <p style={{ fontSize: 22, fontWeight: 500, lineHeight: 1.4, letterSpacing: '-0.01em', margin: 0 }}>
+              To help African organizations transition from manual systems into intelligent systems through AI, automation, and digital infrastructure.
+            </p>
+          </div>
+          <div className="card" style={{ padding: 40 }}>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>VISION</div>
+            <p style={{ fontSize: 22, fontWeight: 500, lineHeight: 1.4, letterSpacing: '-0.01em', margin: 0 }}>
+              To become Africa's most trusted AI transformation company — the bridge between where Africa is and where Africa is going.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section dark">
+        <div className="wrap">
+          <div className="eyebrow" style={{ marginBottom: 16 }}>CORE VALUES</div>
+          <h2 className="h-2" style={{ marginBottom: 48, maxWidth: 600 }}>What we hold ourselves to.</h2>
+          <div style={{ display: 'grid', gap: 0, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', borderTop: '1px solid var(--purple-line)' }}>
+            {VALUES.map(([k, v], i) =>
+            <div key={k} style={{
+              padding: '32px 0 32px',
+              paddingRight: 24,
+              borderBottom: '1px solid var(--purple-line)',
+              borderRight: i < VALUES.length - 1 ? '1px solid var(--purple-line)' : 'none',
+              paddingLeft: i ? 24 : 0
+            }}>
+                <div className="mono" style={{ color: 'var(--mint)', marginBottom: 16 }}>0{i + 1}</div>
+                <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: '-0.02em', marginBottom: 12 }}>{k}</div>
+                <p className="body" style={{ fontSize: 14, margin: 0 }}>{v}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="section deep">
+        <div className="wrap">
+          <div className="eyebrow" style={{ marginBottom: 16 }}>THE TEAM</div>
+          <h2 className="h-2" style={{ marginBottom: 48 }}>The faces behind NEXT.</h2>
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+            {TEAM.map(([n, r, b], i) =>
+            <div key={n}>
+                {i === 0 ? (
+                  <img src="assets/hudson-founder-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                ) : i === 1 ? (
+                  <img src="assets/patrick-developer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                ) : i === 2 ? (
+                  <img src="assets/jessy-trainer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                ) : (
+                  <div className="imgph mint" style={{ aspectRatio: '4/5', marginBottom: 16 }}>
+                    <span className="lbl">// Portrait — {n}, Kampala</span>
+                  </div>
+                )}
+                <div style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em' }}>{n}</div>
+                <div style={{ fontSize: 13, color: 'var(--mint)', marginTop: 4, marginBottom: 12, letterSpacing: '0.02em' }}>{r}</div>
+                <p className="body" style={{ fontSize: 14, margin: 0 }}>{b}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="section dark" style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
+          width: 900, height: 600,
+          background: 'radial-gradient(ellipse, rgba(0,252,143,0.16), transparent 60%)',
+          filter: 'blur(60px)'
+        }} />
+        <div className="wrap" style={{ position: 'relative', textAlign: 'center', maxWidth: 900, margin: '0 auto' }}>
+          <div className="eyebrow" style={{ marginBottom: 16 }}>WHY AFRICA · WHY NOW</div>
+          <h2 className="h-1" style={{ marginBottom: 24 }}>
+            Africa is the fastest-growing continent in the world. It has <span style={{ color: 'var(--mint)' }}>the most to gain</span> from intelligent systems — and the most to lose from waiting.
+          </h2>
+          <button className="btn btn-primary" onClick={() => go('start')} style={{ marginTop: 24 }}>
+            Build with us <span className="arr">→</span>
+          </button>
+        </div>
+      </section>
+    </div>);
+
+}
+
+/* START — Assessment + Form + Booking ---------------------------------------- */
+const QUESTIONS = [
+{ id: 'tech', label: 'How would you describe your current use of technology in operations?',
+  options: ['1 · Mostly paper and manual', '2 · Some basic tools', '3 · A few digital systems', '4 · Mostly digital', '5 · Highly digital'] },
+{ id: 'tools', label: 'Does your team use any digital tools for communication and project management?',
+  options: ['No — phone & email only', 'Yes — but inconsistently', 'Yes — across the team'] },
+{ id: 'manual', label: 'How much of your reporting and data management is done manually?',
+  options: ['Almost all of it', 'About half', 'Some — but mostly automated', 'Almost none'] },
+{ id: 'lead', label: 'Has your leadership team discussed AI or digital transformation in the last 12 months?',
+  options: ['Not yet', 'Briefly', 'Actively planning', 'Already underway'] },
+{ id: 'pain', label: 'What is your biggest operational challenge right now?',
+  options: ['Reporting takes forever', 'Communication is scattered', 'Too much manual data entry', "We can't see what's happening across teams", 'Something else'] },
+{ id: 'size', label: 'How many people are in your organization?',
+  options: ['1–10', '11–50', '51–200', '201–1000', '1000+'] },
+{ id: 'type', label: 'What is your organization type?',
+  options: ['NGO', 'School / University', 'Church / Faith Org', 'Business', 'Government', 'Healthcare', 'Other'] }];
+
+
+function Start({ go }) {
+  const [tab, setTab] = useStateB('assessment');
+
+  return (
+    <div className="page">
+      <PageHero
+        eyebrow="START"
+        h1={<>Your Transformation Starts With <span style={{ color: 'var(--mint)' }}>One Honest Conversation.</span></>}
+        sub="Tell us about your organization and where you want to go. We'll tell you exactly how NEXT can get you there." />
+      
+
+      <section className="section dark" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap', borderBottom: '1px solid var(--purple-line)' }}>
+            {[
+            ['assessment', 'Free AI Readiness Assessment', 'gold'],
+            ['contact', 'Contact Form', 'mint'],
+            ['call', 'Book a Discovery Call', 'mint'],
+            ['whatsapp', 'WhatsApp Direct', 'mint']].
+            map(([id, label, accent]) =>
+            <button key={id} onClick={() => setTab(id)}
+            style={{
+              padding: '16px 4px', marginRight: 24,
+              fontSize: 14, fontWeight: 500,
+              color: tab === id ? accent === 'gold' ? 'var(--gold)' : 'var(--mint)' : 'rgba(255,255,255,0.6)',
+              borderBottom: '2px solid ' + (tab === id ? accent === 'gold' ? 'var(--gold)' : 'var(--mint)' : 'transparent'),
+              marginBottom: -1
+            }}>{label}</button>
+            )}
+          </div>
+
+          {tab === 'assessment' && <Assessment go={go} />}
+          {tab === 'contact' && <ContactForm go={go} />}
+          {tab === 'call' && <BookCall />}
+          {tab === 'whatsapp' && <WhatsAppPanel />}
+        </div>
+      </section>
+    </div>);
+
+}
+
+function Assessment({ go }) {
+  const [step, setStep] = useStateB(0);
+  const [answers, setAnswers] = useStateB({});
+  const [done, setDone] = useStateB(false);
+
+  if (done) {
+    // Score: rough — pick a tier from technology + manual answers
+    const score = (parseInt((answers.tech || '1').split(' ')[0], 10) || 1) + (
+    ['No — phone & email only', 'Yes — but inconsistently', 'Yes — across the team'].indexOf(answers.tools || '') + 1) + (
+    4 - ['Almost all of it', 'About half', 'Some — but mostly automated', 'Almost none'].indexOf(answers.manual || '')) + (
+    ['Not yet', 'Briefly', 'Actively planning', 'Already underway'].indexOf(answers.lead || '') + 1);
+    let tier;
+    if (score >= 14) tier = { name: 'AI Ready', color: 'var(--mint)', body: "You're already operating digitally — now it's time to layer on intelligence. We'd recommend starting with a focused AI Integration engagement on your highest-leverage workflow." };else
+    if (score >= 9) tier = { name: 'AI Curious', color: 'var(--gold)', body: "You're past 'manual', but the system is fragmented. We'd recommend an Intelligence Audit followed by a 90-day transformation roadmap." };else
+    tier = { name: 'AI Beginner', color: 'var(--mint)', body: 'Most of your organization is still on paper or basic tools — and that\u2019s okay. The right next step is the AI Executive Seminar plus a Digital Infrastructure foundation.' };
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.6fr)', gap: 32 }} className="grid-stack">
+        <div className="card" style={{ padding: 40, borderColor: tier.color }}>
+          <div className="mono" style={{ color: tier.color, marginBottom: 16 }}>YOUR RESULT</div>
+          <div style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 700, letterSpacing: '-0.03em', color: tier.color, lineHeight: 1, marginBottom: 24 }}>{tier.name}</div>
+          <p className="body" style={{ fontSize: 17, lineHeight: 1.6, marginTop: 0 }}>{tier.body}</p>
+          <div style={{ display: 'flex', gap: 12, marginTop: 32, flexWrap: 'wrap' }}>
+            <button className="btn btn-gold" onClick={() => {setDone(false);setStep(0);setAnswers({});}}>Retake</button>
+            <button className="btn btn-primary">Email me my full report <span className="arr">→</span></button>
+          </div>
+        </div>
+        <div className="card" style={{ padding: 32, background: 'var(--purple)', borderColor: 'var(--gold)' }}>
+          <div className="eyebrow gold" style={{ marginBottom: 16 }}>NEXT STEP</div>
+          <h3 style={{ fontSize: 22, fontWeight: 600, lineHeight: 1.25, marginBottom: 16 }}>Book a free 30-minute discovery call.</h3>
+          <p className="body" style={{ marginTop: 0, fontSize: 14 }}>One conversation. We'll tell you exactly where to start.</p>
+          <button className="btn btn-gold" style={{ marginTop: 16 }}>Pick a time <span className="arr">→</span></button>
+        </div>
+      </div>);
+
+  }
+
+  const q = QUESTIONS[step];
+  const progress = step / QUESTIONS.length * 100;
+
+  return (
+    <div style={{ maxWidth: 760, margin: '0 auto' }}>
+      <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+        <span>Question {step + 1} of {QUESTIONS.length}</span>
+        <span style={{ color: 'var(--mint)' }}>≈ {Math.max(1, QUESTIONS.length - step)} min left</span>
+      </div>
+      <div style={{ height: 6, background: 'var(--purple-deep)', borderRadius: 999, overflow: 'hidden', marginBottom: 40 }}>
+        <div style={{ width: `${progress}%`, height: '100%', background: 'var(--mint)', boxShadow: '0 0 16px var(--mint)', transition: 'width .3s ease' }} />
+      </div>
+      <h2 className="h-2" style={{ marginBottom: 32, lineHeight: 1.2 }}>{q.label}</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {q.options.map((opt) => {
+          const selected = answers[q.id] === opt;
+          return (
+            <button key={opt} onClick={() => setAnswers({ ...answers, [q.id]: opt })}
+            style={{
+              textAlign: 'left', padding: '20px 24px', minHeight: 60,
+              borderRadius: 12,
+              border: '1px solid ' + (selected ? 'var(--mint)' : 'var(--purple-line)'),
+              background: selected ? 'var(--mint-soft)' : 'var(--purple-deep)',
+              color: selected ? 'var(--mint)' : 'white',
+              fontSize: 16, fontWeight: 500,
+              display: 'flex', alignItems: 'center', gap: 16
+            }}>
+              <span style={{
+                width: 20, height: 20, borderRadius: 999,
+                border: '1.5px solid ' + (selected ? 'var(--mint)' : 'rgba(255,255,255,0.3)'),
+                background: selected ? 'var(--mint)' : 'transparent'
+              }} />
+              {opt}
+            </button>);
+
+        })}
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 40 }}>
+        <button className="btn btn-ghost" disabled={step === 0} onClick={() => setStep(step - 1)} style={{ opacity: step === 0 ? 0.4 : 1 }}>← Back</button>
+        <button className="btn btn-primary" disabled={!answers[q.id]}
+        onClick={() => step < QUESTIONS.length - 1 ? setStep(step + 1) : setDone(true)}
+        style={{ opacity: !answers[q.id] ? 0.4 : 1 }}>
+          {step < QUESTIONS.length - 1 ? <>Next <span className="arr">→</span></> : <>Get my result <span className="arr">→</span></>}
+        </button>
+      </div>
+    </div>);
+
+}
+
+function ContactForm() {
+  const [submitted, setSubmitted] = useStateB(false);
+  if (submitted) {
+    return (
+      <div style={{ maxWidth: 600, margin: '60px auto', textAlign: 'center', padding: 40, border: '1px solid var(--mint)', borderRadius: 20, background: 'var(--mint-soft)' }}>
+        <div style={{ fontSize: 56, marginBottom: 16 }}>✓</div>
+        <h2 className="h-2" style={{ marginBottom: 16, color: 'var(--mint)' }}>Got it. Thank you.</h2>
+        <p className="body" style={{ fontSize: 17 }}>We'll respond personally within 24 hours. In the meantime, feel free to ping us on WhatsApp — that's where most East African business conversations happen, and we keep it close.</p>
+      </div>);
+
+  }
+  return (
+    <form onSubmit={(e) => {e.preventDefault();setSubmitted(true);}}
+    style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '0 24px', maxWidth: 920 }} className="grid-stack">
+      <FF label="Full Name" req><input type="text" required /></FF>
+      <FF label="Organization Name" req><input type="text" required /></FF>
+      <FF label="Organization Type" req>
+        <select required defaultValue="">
+          <option value="" disabled>Choose one…</option>
+          {['NGO', 'School / University', 'Church / Faith Org', 'Business', 'Government', 'Healthcare', 'Other'].map((o) => <option key={o}>{o}</option>)}
+        </select>
+      </FF>
+      <FF label="Email Address" req><input type="email" required /></FF>
+      <FF label="Phone Number" req>
+        <input type="tel" required placeholder="+256 ..." />
+        <label className="check" style={{ marginTop: 8 }}>
+          <input type="checkbox" defaultChecked /> This number is on WhatsApp
+        </label>
+      </FF>
+      <FF label="How did you hear about NEXT?">
+        <select defaultValue="">
+          <option value="">— optional —</option>
+          {['Referral', 'LinkedIn', 'Event / Training', 'Search', 'Social Media', 'Other'].map((o) => <option key={o}>{o}</option>)}
+        </select>
+      </FF>
+      <FF label="What are you looking for help with?" full>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {['AI Integration & Automation', 'Digital Infrastructure', 'AI Training', 'Creative AI Media', 'Smart Operations Consulting'].map((s) =>
+          <label key={s} className="check" style={{ background: 'var(--purple-deep)', border: '1px solid var(--purple-line)', borderRadius: 999, padding: '8px 14px', cursor: 'pointer' }}>
+              <input type="checkbox" /> {s}
+            </label>
+          )}
+        </div>
+      </FF>
+      <FF label="Tell us briefly about your organization and what you want to achieve" full>
+        <textarea placeholder="The more we know, the more useful our reply." />
+      </FF>
+      <div style={{ gridColumn: '1 / -1', marginTop: 8 }}>
+        <button type="submit" className="btn btn-primary">Send My Request <span className="arr">→</span></button>
+        <p className="body" style={{ marginTop: 16, fontSize: 13 }}>We respond personally within 24 hours.</p>
+      </div>
+    </form>);
+
+}
+function FF({ label, req, full, children }) {
+  return (
+    <div className="field" style={full ? { gridColumn: '1 / -1' } : {}}>
+      <label>{label}{req && <span style={{ color: 'var(--mint)' }}> *</span>}</label>
+      {children}
+    </div>);
+
+}
+
+function BookCall() {
+  const slots = ['09:00', '10:30', '13:00', '14:30', '16:00'];
+  const days = ['Mon · May 11', 'Tue · May 12', 'Wed · May 13', 'Thu · May 14', 'Fri · May 15'];
+  const [day, setDay] = useStateB(0);
+  const [slot, setSlot] = useStateB(null);
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 0.6fr) minmax(0, 1fr)', gap: 32 }} className="grid-stack">
+      <div className="card" style={{ padding: 32 }}>
+        <div className="eyebrow gold" style={{ marginBottom: 12 }}>FREE · 30 MINUTES</div>
+        <h2 className="h-2" style={{ marginBottom: 16 }}>Book a Discovery Call.</h2>
+        <p className="body" style={{ fontSize: 16 }}>One honest conversation about where your organization is and what could come next. With Hudson or a member of the strategy team.</p>
+        <ul style={{ padding: 0, listStyle: 'none', marginTop: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {['No prep required', 'No pitch deck', 'You leave with a clear next step'].map((x) =>
+          <li key={x} style={{ display: 'flex', gap: 10, alignItems: 'center', fontSize: 14 }}><span style={{ color: 'var(--mint)' }}>✓</span> {x}</li>
+          )}
+        </ul>
+      </div>
+      <div className="card" style={{ padding: 24 }}>
+        <div className="eyebrow" style={{ marginBottom: 16 }}>PICK A DAY</div>
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', marginBottom: 24 }}>
+          {days.map((d, i) =>
+          <button key={d} onClick={() => {setDay(i);setSlot(null);}} style={{
+            padding: '14px 18px', borderRadius: 12, whiteSpace: 'nowrap',
+            border: '1px solid ' + (day === i ? 'var(--mint)' : 'var(--purple-line)'),
+            background: day === i ? 'var(--mint-soft)' : 'transparent',
+            color: day === i ? 'var(--mint)' : 'white',
+            fontSize: 14, fontWeight: 500
+          }}>{d}</button>
+          )}
+        </div>
+        <div className="eyebrow" style={{ marginBottom: 16 }}>PICK A TIME · EAT</div>
+        <div style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', marginBottom: 24 }}>
+          {slots.map((s) =>
+          <button key={s} onClick={() => setSlot(s)} style={{
+            padding: 14, borderRadius: 10,
+            border: '1px solid ' + (slot === s ? 'var(--mint)' : 'var(--purple-line)'),
+            background: slot === s ? 'var(--mint)' : 'transparent',
+            color: slot === s ? 'var(--purple)' : 'white',
+            fontSize: 14, fontWeight: 600
+          }}>{s}</button>
+          )}
+        </div>
+        <button className="btn btn-primary" disabled={!slot} style={{ opacity: slot ? 1 : 0.4 }}>
+          {slot ? <>Confirm {days[day]} at {slot} <span className="arr">→</span></> : 'Pick a time'}
+        </button>
+      </div>
+    </div>);
+
+}
+function WhatsAppPanel() {
+  return (
+    <div className="card" style={{ padding: 40, maxWidth: 720, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', borderColor: 'rgba(37,211,102,0.4)' }}>
+      <div style={{ width: 56, height: 56, borderRadius: 16, background: '#25D366', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+        <WhatsAppGlyph size={28} />
+      </div>
+      <h2 className="h-2" style={{ marginBottom: 16 }}>Prefer to talk? Message us on WhatsApp.</h2>
+      <p className="body" style={{ fontSize: 16, marginTop: 0 }}>Most business conversations in East Africa happen on WhatsApp. We keep it open during business hours and reply within minutes.</p>
+      <div style={{ display: 'flex', gap: 12, marginTop: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+        <a className="btn" style={{ background: '#25D366', color: 'white' }} href="https://wa.me/256706028899">
+          <WhatsAppGlyph size={18} /> +256 706 028 899
+        </a>
+        <span className="mono" style={{ color: 'rgba(255,255,255,0.5)' }}>· MON–FRI · 9:00 – 18:00 EAT</span>
+      </div>
+    </div>);
+
+}
+
+Object.assign(window, { Training, Insights, About, Start });
+</script>
+  <script type="text/babel" data-source="app.jsx">
+/* ===== app.jsx ===== */
+/* Main App — file-based router for static export --------------------------- */
+const { useState: useStateApp, useEffect: useEffectApp } = React;
+
+function App() {
+  const currentPage = document.documentElement.dataset.page || 'home';
+  const [page] = useStateApp(currentPage);
+
+  const go = (id) => {
+    window.location.href = PAGE_MAP[id] || 'index.html';
+  };
+
+  return (
+    <>
+      <Nav page={page} go={go} />
+      <main>
+        {page === 'home'     && <Home go={go} />}
+        {page === 'what'     && <WhatWeDo go={go} />}
+        {page === 'who'      && <WhoWeServe go={go} />}
+        {page === 'work'     && <OurWork go={go} />}
+        {page === 'training' && <Training go={go} />}
+        {page === 'insights' && <Insights go={go} />}
+        {page === 'about'    && <About go={go} />}
+        {page === 'start'    && <Start go={go} />}
+      </main>
+      <Footer go={go} />
+      <ChatBot go={go} />
+      <FloatingWhatsApp />
+      <style>{`
+        @keyframes dotBlink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        @media (max-width: 860px) {
+          .grid-stack { grid-template-columns: 1fr !important; gap: 32px !important; }
+          .step-arr { display: none !important; }
+        }
+      `}</style>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+</body>
+</html>
