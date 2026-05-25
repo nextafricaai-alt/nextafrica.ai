@@ -34,7 +34,9 @@ for html_name in html_files:
             f'{jsx_contents[jsx_name]}\n'
             f'</script>'
         )
-        html = re.sub(pattern, inline, html, count=1, flags=re.DOTALL)
+        # Use a lambda so re.sub doesn't try to interpret backslash escapes
+        # (like \u, \1, \g) inside the replacement JSX content.
+        html = re.sub(pattern, lambda m, _inline=inline: _inline, html, count=1, flags=re.DOTALL)
     with open(path, "w", encoding="utf-8") as f:
         f.write(html)
     print(f"Rebuilt {html_name}")

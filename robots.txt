@@ -1,4 +1,13 @@
+# NEXT AI — robots.txt
 User-agent: *
 Allow: /
+Disallow: /404.html
+Disallow: /CNAME.example
+Disallow: /build.py
+Disallow: /README.md
 
-Sitemap: /sitemap.xml
+# Sitemap
+Sitemap: https://nextafrica.ai/sitemap.xml
+
+# Crawl politeness
+Crawl-delay: 1

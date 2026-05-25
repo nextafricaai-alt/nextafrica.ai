@@ -26,7 +26,7 @@ function Logo({ onClick, variant = 'white', height = 32 }) {
   return (
     <a href="index.html" onClick={(e) => {e.preventDefault();onClick && onClick();}} aria-label="NEXT — home"
     style={{ display: 'inline-flex', alignItems: 'center' }}>
-      <img src={src} alt="NEXT" style={{ display: 'block', width: '220px', height: '50px', objectFit: 'cover', objectPosition: 'center' }} />
+      <img loading="lazy" decoding="async" src={src} alt="NEXT" style={{ display: 'block', width: '220px', height: '50px', objectFit: 'cover', objectPosition: 'center' }} />
     </a>);
 
 }

@@ -214,7 +214,7 @@ function Home({ go }) {
             <button key={i.title} onClick={() => go('who')} className="card-light"
             style={{ textAlign: 'left', padding: 0, cursor: 'pointer', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 {i.image ? (
-                  <img src={i.image} alt={i.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={i.image} alt={i.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph light" style={{ aspectRatio: '4/3', borderRadius: 0, border: 0 }}>
                     <span className="lbl">// Image — {i.title}</span>
@@ -258,7 +258,7 @@ function Home({ go }) {
             {UPCOMING_TRAINING.slice(0, 3).map((t) =>
             <div key={t.title} className="card" style={{ borderColor: 'rgba(255,180,0,0.25)', padding: 0, overflow: 'hidden' }}>
                 {t.image ? (
-                  <img src={t.image} alt={t.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={t.image} alt={t.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph" style={{ aspectRatio: '16/9', borderRadius: 0, border: 0 }}>
                     <span className="lbl">// Image — {t.title}</span>
@@ -303,7 +303,7 @@ function CaseCard({ c, go }) {
   return (
     <button onClick={() => go('work')} className="card" style={{ textAlign: 'left', cursor: 'pointer', padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {c.image ? (
-        <img src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+        <img loading="lazy" decoding="async" src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
       ) : (
         <div className="imgph mint" style={{ aspectRatio: '4/3', borderRadius: 0, border: 0 }}>
           <span className="lbl">// {c.imgLabel}</span>

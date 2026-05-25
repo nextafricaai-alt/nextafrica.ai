@@ -57,7 +57,7 @@ function Training({ go }) {
             {PROGRAMS.map((p) =>
             <article key={p.n} className="card" style={{ display: 'flex', flexDirection: 'column', borderColor: 'rgba(255,180,0,0.18)', padding: 0, overflow: 'hidden' }}>
                 {p.image ? (
-                  <img src={p.image} alt={p.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={p.image} alt={p.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph" style={{ aspectRatio: '16/9', borderRadius: 0, border: 0, background: 'repeating-linear-gradient(45deg, rgba(255,180,0,0.10) 0 8px, transparent 8px 16px), var(--purple-deep)' }}>
                     <span className="lbl" style={{ color: p.accent }}>// Image — {p.title} session</span>
@@ -200,7 +200,7 @@ function Insights({ go }) {
           {list[0] && list[0].big &&
           <article className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 24, display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)' }}>
               {list[0].image ? (
-                <img src={list[0].image} alt={list[0].t} style={{ width: '100%', minHeight: 320, objectFit: 'cover', display: 'block' }} />
+                <img loading="lazy" decoding="async" src={list[0].image} alt={list[0].t} style={{ width: '100%', minHeight: 320, objectFit: 'cover', display: 'block' }} />
               ) : (
                 <div className="imgph mint" style={{ minHeight: 320, borderRadius: 0, border: 0 }}>
                   <span className="lbl">// Cornerstone article — hero illustration</span>
@@ -219,7 +219,7 @@ function Insights({ go }) {
             {list.filter((a) => !a.big).map((a) =>
             <article key={a.t} className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 {a.image ? (
-                  <img src={a.image} alt={a.t} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={a.image} alt={a.t} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph mint" style={{ aspectRatio: '16/10', borderRadius: 0, border: 0 }}>
                     <span className="lbl">// Article thumbnail — {a.t.slice(0, 38)}{a.t.length > 38 ? '…' : ''}</span>
@@ -259,7 +259,7 @@ function Insights({ go }) {
             {RESOURCES.map((r) =>
             <div key={r.t} className="card" style={{ borderColor: 'rgba(255,180,0,0.25)', padding: 0, overflow: 'hidden' }}>
                 {r.image ? (
-                  <img src={r.image} alt={r.t} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={r.image} alt={r.t} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph" style={{ aspectRatio: '3/2', borderRadius: 0, border: 0, background: 'repeating-linear-gradient(45deg, rgba(255,180,0,0.10) 0 8px, transparent 8px 16px), var(--purple-deep)' }}>
                     <span className="lbl" style={{ color: 'var(--gold)' }}>// PDF cover — {r.t}</span>
@@ -309,7 +309,7 @@ function About({ go }) {
           <div>
             <div className="eyebrow" style={{ marginBottom: 16 }}>THE NEXT STORY</div>
             <h2 className="h-2" style={{ marginBottom: 24 }}>Why we exist.</h2>
-            <img src="assets/hudson-founder-photo.jpg" alt="Hudson Timothy Tumusiime, Founder & CEO" style={{ width: '100%', height: 'auto', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '4/5' }} />
+            <img loading="lazy" decoding="async" src="assets/hudson-founder-photo.jpg" alt="Hudson Timothy Tumusiime, Founder & CEO" style={{ width: '100%', height: 'auto', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '4/5' }} />
           </div>
           <div style={{ paddingTop: '52px' }}>
             <div className="eyebrow mint" style={{ marginBottom: 12 }}>FOUNDER</div>
@@ -367,11 +367,11 @@ function About({ go }) {
             {TEAM.map(([n, r, b], i) =>
             <div key={n}>
                 {i === 0 ? (
-                  <img src="assets/hudson-founder-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                  <img loading="lazy" decoding="async" src="assets/hudson-founder-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
                 ) : i === 1 ? (
-                  <img src="assets/patrick-developer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                  <img loading="lazy" decoding="async" src="assets/patrick-developer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
                 ) : i === 2 ? (
-                  <img src="assets/jessy-trainer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                  <img loading="lazy" decoding="async" src="assets/jessy-trainer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
                 ) : (
                   <div className="imgph mint" style={{ aspectRatio: '4/5', marginBottom: 16 }}>
                     <span className="lbl">// Portrait — {n}, Kampala</span>

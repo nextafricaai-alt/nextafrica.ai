@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Start Your Transformation — NEXT</title>
-  <meta name="description" content="Take the free AI Readiness Assessment, contact us, or book a discovery call." />
+  <title>Start Your AI Transformation Journey | NEXT</title>
+  <meta name="description" content="Take the free AI Readiness Assessment, request a strategy session, or book a discovery call with NEXT. Begin your transformation today." />
   <meta name="theme-color" content="#140035" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,6 +16,86 @@
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+
+  <!-- SEO / Indexing -->
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://nextafrica.ai/start.html" />
+  <meta name="keywords" content="AI consultation Africa, AI readiness assessment, contact NEXT, book AI strategy session Uganda" />
+
+  <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://nextafrica.ai/start.html" />
+  <meta property="og:title" content="Start Your AI Transformation Journey | NEXT" />
+  <meta property="og:description" content="Take the free AI Readiness Assessment, request a strategy session, or book a discovery call with NEXT. Begin your transformation today." />
+  <meta property="og:image" content="https://nextafrica.ai/assets/next-logo-color.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="NEXT" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://nextafrica.ai/start.html" />
+  <meta name="twitter:title" content="Start Your AI Transformation Journey | NEXT" />
+  <meta name="twitter:description" content="Take the free AI Readiness Assessment, request a strategy session, or book a discovery call with NEXT. Begin your transformation today." />
+  <meta name="twitter:image" content="https://nextafrica.ai/assets/next-logo-color.png" />
+  <meta name="twitter:site" content="@nextafricaai" />
+
+  <!-- Performance hints -->
+  <link rel="dns-prefetch" href="https://unpkg.com" />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "NEXT",
+  "alternateName": "NEXT Africa AI",
+  "url": "https://nextafrica.ai",
+  "logo": "https://nextafrica.ai/assets/next-logo-color.png",
+  "description": "Africa's AI transformation company. NEXT helps African organizations transform through AI, automation, and intelligent digital systems.",
+  "founder": {
+    "@type": "Person",
+    "name": "Hudson Tumusiime"
+  },
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Kampala, Uganda"
+  },
+  "areaServed": {
+    "@type": "Place",
+    "name": "Africa"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/company/nextafrica-ai",
+    "https://twitter.com/nextafricaai"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "areaServed": "Africa",
+    "availableLanguage": [
+      "English",
+      "Swahili",
+      "Luganda"
+    ]
+  }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "url": "https://nextafrica.ai/start.html",
+  "name": "Start Your AI Transformation Journey | NEXT",
+  "description": "Take the free AI Readiness Assessment, request a strategy session, or book a discovery call with NEXT. Begin your transformation today.",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "NEXT",
+    "url": "https://nextafrica.ai"
+  }
+}
+  </script>
 </head>
 <body>
   <div id="root"></div>
@@ -50,7 +130,7 @@ function Logo({ onClick, variant = 'white', height = 32 }) {
   return (
     <a href="index.html" onClick={(e) => {e.preventDefault();onClick && onClick();}} aria-label="NEXT — home"
     style={{ display: 'inline-flex', alignItems: 'center' }}>
-      <img src={src} alt="NEXT" style={{ display: 'block', width: '220px', height: '50px', objectFit: 'cover', objectPosition: 'center' }} />
+      <img loading="lazy" decoding="async" src={src} alt="NEXT" style={{ display: 'block', width: '220px', height: '50px', objectFit: 'cover', objectPosition: 'center' }} />
     </a>);
 
 }
@@ -713,7 +793,7 @@ function Home({ go }) {
             <button key={i.title} onClick={() => go('who')} className="card-light"
             style={{ textAlign: 'left', padding: 0, cursor: 'pointer', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 {i.image ? (
-                  <img src={i.image} alt={i.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={i.image} alt={i.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph light" style={{ aspectRatio: '4/3', borderRadius: 0, border: 0 }}>
                     <span className="lbl">// Image — {i.title}</span>
@@ -757,7 +837,7 @@ function Home({ go }) {
             {UPCOMING_TRAINING.slice(0, 3).map((t) =>
             <div key={t.title} className="card" style={{ borderColor: 'rgba(255,180,0,0.25)', padding: 0, overflow: 'hidden' }}>
                 {t.image ? (
-                  <img src={t.image} alt={t.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={t.image} alt={t.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph" style={{ aspectRatio: '16/9', borderRadius: 0, border: 0 }}>
                     <span className="lbl">// Image — {t.title}</span>
@@ -802,7 +882,7 @@ function CaseCard({ c, go }) {
   return (
     <button onClick={() => go('work')} className="card" style={{ textAlign: 'left', cursor: 'pointer', padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {c.image ? (
-        <img src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+        <img loading="lazy" decoding="async" src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
       ) : (
         <div className="imgph mint" style={{ aspectRatio: '4/3', borderRadius: 0, border: 0 }}>
           <span className="lbl">// {c.imgLabel}</span>
@@ -1060,7 +1140,7 @@ function WhatWeDo({ go }) {
                 <div className="mono" style={{ color: 'var(--mint)', marginBottom: 12 }}>SERVICE {s.n}</div>
                 <h2 className="h-1" style={{ marginBottom: 32 }}>{s.title}</h2>
                 {s.image ? (
-                  <img src={s.image} alt={s.title} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', borderRadius: 'var(--radius)', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={s.image} alt={s.title} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', borderRadius: 'var(--radius)', display: 'block' }} />
                 ) : (
                   <div className="imgph mint" style={{ aspectRatio: '4/5' }}>
                     <span className="lbl">// Image — {s.title}</span>
@@ -1229,7 +1309,7 @@ function WhoWeServe({ go }) {
               </div>
               <div>
                 {a.image ? (
-                  <img src={a.image} alt={a.title} style={{ width: '100%', aspectRatio: '5/4', objectFit: 'cover', borderRadius: 'var(--radius)', marginBottom: 24, display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={a.image} alt={a.title} style={{ width: '100%', aspectRatio: '5/4', objectFit: 'cover', borderRadius: 'var(--radius)', marginBottom: 24, display: 'block' }} />
                 ) : (
                   <div className="imgph mint" style={{ aspectRatio: '5/4', marginBottom: 24 }}>
                     <span className="lbl">// Image — {a.title}</span>
@@ -1361,7 +1441,7 @@ function FullCase({ c, go }) {
   return (
     <article className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {c.image ? (
-        <img src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '16/10', objectFit: 'cover', display: 'block' }} />
+        <img loading="lazy" decoding="async" src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '16/10', objectFit: 'cover', display: 'block' }} />
       ) : (
         <div className="imgph mint" style={{ aspectRatio: '16/10', borderRadius: 0, border: 0 }}>
           <span className="lbl">// {c.imgLabel}</span>
@@ -1473,7 +1553,7 @@ function Training({ go }) {
             {PROGRAMS.map((p) =>
             <article key={p.n} className="card" style={{ display: 'flex', flexDirection: 'column', borderColor: 'rgba(255,180,0,0.18)', padding: 0, overflow: 'hidden' }}>
                 {p.image ? (
-                  <img src={p.image} alt={p.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={p.image} alt={p.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph" style={{ aspectRatio: '16/9', borderRadius: 0, border: 0, background: 'repeating-linear-gradient(45deg, rgba(255,180,0,0.10) 0 8px, transparent 8px 16px), var(--purple-deep)' }}>
                     <span className="lbl" style={{ color: p.accent }}>// Image — {p.title} session</span>
@@ -1616,7 +1696,7 @@ function Insights({ go }) {
           {list[0] && list[0].big &&
           <article className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 24, display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)' }}>
               {list[0].image ? (
-                <img src={list[0].image} alt={list[0].t} style={{ width: '100%', minHeight: 320, objectFit: 'cover', display: 'block' }} />
+                <img loading="lazy" decoding="async" src={list[0].image} alt={list[0].t} style={{ width: '100%', minHeight: 320, objectFit: 'cover', display: 'block' }} />
               ) : (
                 <div className="imgph mint" style={{ minHeight: 320, borderRadius: 0, border: 0 }}>
                   <span className="lbl">// Cornerstone article — hero illustration</span>
@@ -1635,7 +1715,7 @@ function Insights({ go }) {
             {list.filter((a) => !a.big).map((a) =>
             <article key={a.t} className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 {a.image ? (
-                  <img src={a.image} alt={a.t} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={a.image} alt={a.t} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph mint" style={{ aspectRatio: '16/10', borderRadius: 0, border: 0 }}>
                     <span className="lbl">// Article thumbnail — {a.t.slice(0, 38)}{a.t.length > 38 ? '…' : ''}</span>
@@ -1675,7 +1755,7 @@ function Insights({ go }) {
             {RESOURCES.map((r) =>
             <div key={r.t} className="card" style={{ borderColor: 'rgba(255,180,0,0.25)', padding: 0, overflow: 'hidden' }}>
                 {r.image ? (
-                  <img src={r.image} alt={r.t} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={r.image} alt={r.t} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }} />
                 ) : (
                   <div className="imgph" style={{ aspectRatio: '3/2', borderRadius: 0, border: 0, background: 'repeating-linear-gradient(45deg, rgba(255,180,0,0.10) 0 8px, transparent 8px 16px), var(--purple-deep)' }}>
                     <span className="lbl" style={{ color: 'var(--gold)' }}>// PDF cover — {r.t}</span>
@@ -1725,7 +1805,7 @@ function About({ go }) {
           <div>
             <div className="eyebrow" style={{ marginBottom: 16 }}>THE NEXT STORY</div>
             <h2 className="h-2" style={{ marginBottom: 24 }}>Why we exist.</h2>
-            <img src="assets/hudson-founder-photo.jpg" alt="Hudson Timothy Tumusiime, Founder & CEO" style={{ width: '100%', height: 'auto', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '4/5' }} />
+            <img loading="lazy" decoding="async" src="assets/hudson-founder-photo.jpg" alt="Hudson Timothy Tumusiime, Founder & CEO" style={{ width: '100%', height: 'auto', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '4/5' }} />
           </div>
           <div style={{ paddingTop: '52px' }}>
             <div className="eyebrow mint" style={{ marginBottom: 12 }}>FOUNDER</div>
@@ -1783,11 +1863,11 @@ function About({ go }) {
             {TEAM.map(([n, r, b], i) =>
             <div key={n}>
                 {i === 0 ? (
-                  <img src="assets/hudson-founder-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                  <img loading="lazy" decoding="async" src="assets/hudson-founder-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
                 ) : i === 1 ? (
-                  <img src="assets/patrick-developer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                  <img loading="lazy" decoding="async" src="assets/patrick-developer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
                 ) : i === 2 ? (
-                  <img src="assets/jessy-trainer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
+                  <img loading="lazy" decoding="async" src="assets/jessy-trainer-photo.jpg" alt={n} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', objectPosition: 'center 20%', borderRadius: 'var(--radius)', marginBottom: 16, display: 'block' }} />
                 ) : (
                   <div className="imgph mint" style={{ aspectRatio: '4/5', marginBottom: 16 }}>
                     <span className="lbl">// Portrait — {n}, Kampala</span>

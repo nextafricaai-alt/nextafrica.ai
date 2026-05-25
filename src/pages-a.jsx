@@ -112,7 +112,7 @@ function WhatWeDo({ go }) {
                 <div className="mono" style={{ color: 'var(--mint)', marginBottom: 12 }}>SERVICE {s.n}</div>
                 <h2 className="h-1" style={{ marginBottom: 32 }}>{s.title}</h2>
                 {s.image ? (
-                  <img src={s.image} alt={s.title} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', borderRadius: 'var(--radius)', display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={s.image} alt={s.title} style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', borderRadius: 'var(--radius)', display: 'block' }} />
                 ) : (
                   <div className="imgph mint" style={{ aspectRatio: '4/5' }}>
                     <span className="lbl">// Image — {s.title}</span>
@@ -281,7 +281,7 @@ function WhoWeServe({ go }) {
               </div>
               <div>
                 {a.image ? (
-                  <img src={a.image} alt={a.title} style={{ width: '100%', aspectRatio: '5/4', objectFit: 'cover', borderRadius: 'var(--radius)', marginBottom: 24, display: 'block' }} />
+                  <img loading="lazy" decoding="async" src={a.image} alt={a.title} style={{ width: '100%', aspectRatio: '5/4', objectFit: 'cover', borderRadius: 'var(--radius)', marginBottom: 24, display: 'block' }} />
                 ) : (
                   <div className="imgph mint" style={{ aspectRatio: '5/4', marginBottom: 24 }}>
                     <span className="lbl">// Image — {a.title}</span>
@@ -413,7 +413,7 @@ function FullCase({ c, go }) {
   return (
     <article className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {c.image ? (
-        <img src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '16/10', objectFit: 'cover', display: 'block' }} />
+        <img loading="lazy" decoding="async" src={c.image} alt={c.title} style={{ width: '100%', aspectRatio: '16/10', objectFit: 'cover', display: 'block' }} />
       ) : (
         <div className="imgph mint" style={{ aspectRatio: '16/10', borderRadius: 0, border: 0 }}>
           <span className="lbl">// {c.imgLabel}</span>
