@@ -39,6 +39,31 @@ function Home({ go }) {
             <button className="btn btn-ghost" onClick={() => go('work')}>See Our Work</button>
           </div>
 
+          {/* Hero video — autoplays muted, loops, mobile-safe. Controls visible
+              so visitors can pause / unmute. preload=metadata keeps page light. */}
+          <div className="neural-fade-in" style={{
+            marginTop: 56,
+            maxWidth: 760,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            borderRadius: 20,
+            overflow: 'hidden',
+            boxShadow: '0 30px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,252,143,0.18)',
+            animationDelay: '1.3s'
+          }}>
+            <video
+              src="assets/hero-video.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              preload="metadata"
+              style={{ width: '100%', height: 'auto', display: 'block', background: '#000' }}
+              aria-label="NEXT introduction video"
+            />
+          </div>
+
           <div className="neural-fade-in" style={{
             marginTop: 64, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 32,
             color: 'rgba(255,255,255,0.5)', fontSize: 12, letterSpacing: '0.16em', textTransform: 'uppercase',
