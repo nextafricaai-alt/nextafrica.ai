@@ -88,7 +88,8 @@ function WhatWeDo({ go }) {
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'linear-gradient(180deg, rgba(10,0,32,0.35) 0%, rgba(10,0,32,0.6) 60%, rgba(10,0,32,0.88) 100%)' }} />
         <div className="wrap" style={{ position: 'relative', maxWidth: 1100, zIndex: 2 }}>
           <div className="tag" style={{ marginBottom: 24 }}><span className="dot" /> WHAT WE DO</div>
-          <p className="lede" style={{ maxWidth: 720, color: '#fff' }}>Every service NEXT delivers is designed with one goal: to move your organization from where it is today to where it needs to be tomorrow.</p>
+          <h1 className="h-display" style={{ marginBottom: 24 }}>We Don't Just Implement Technology.<br/><span style={{ color: 'var(--mint)' }}>We Transform Organizations.</span></h1>
+          <p className="lede" style={{ maxWidth: 720 }}>Every service NEXT delivers is designed with one goal: to move your organization from where it is today to where it needs to be tomorrow.</p>
         </div>
       </section>
 
