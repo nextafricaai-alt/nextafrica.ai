@@ -46,18 +46,6 @@ function Home({ go }) {
             <span>Uganda</span><span>Kenya</span><span>Rwanda</span><span>Tanzania</span><span>Ethiopia</span>
           </div>
 
-          {/* Partner / client logos placeholder strip */}
-          <div className="neural-fade-in" style={{
-            marginTop: 32, display: 'grid', gap: 16,
-            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', maxWidth: 1000, marginLeft: 'auto', marginRight: 'auto',
-            animationDelay: '1.2s'
-          }}>
-            {[1,2,3,4,5].map(n => (
-              <div key={n} className="imgph" style={{ aspectRatio: '5/2', borderRadius: 8 }}>
-                <span className="lbl">// Logo {n}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
