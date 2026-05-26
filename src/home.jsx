@@ -8,16 +8,13 @@ function Home({ go }) {
       <NeuralScrollClusters />
 
       {/* Hero */}
-      <section className="neural-hero-section" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-        <NeuralBg />
-        <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
-
-        <div style={{
-          position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)',
-          width: 800, height: 800,
-          background: 'radial-gradient(circle, rgba(0,252,143,0.12), transparent 60%)',
-          filter: 'blur(60px)', pointerEvents: 'none'
-        }} />
+      <section className="neural-hero-section" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', overflow: 'hidden', background: '#0A001A' }}>
+        <video src="assets/hero-video.mp4" autoPlay muted loop playsInline preload="auto" aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, filter: 'brightness(0.55) saturate(110%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'linear-gradient(180deg, rgba(10,0,32,0.35) 0%, rgba(10,0,32,0.55) 60%, rgba(10,0,32,0.85) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, opacity: 0.35, pointerEvents: 'none' }}>
+          <NeuralBg />
+        </div>
+        <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)', width: 800, height: 800, background: 'radial-gradient(circle, rgba(0,252,143,0.12), transparent 60%)', filter: 'blur(60px)', pointerEvents: 'none', zIndex: 1 }} />
         <div className="wrap" style={{ position: 'relative', padding: '120px 24px 80px', textAlign: 'center', zIndex: 2 }}>
           <div className="tag neural-fade-in" style={{ marginBottom: 28, animationDelay: '0.1s' }}>
             <span className="dot" /> AI & DIGITAL TRANSFORMATION · EAST AFRICA
@@ -39,30 +36,6 @@ function Home({ go }) {
             <button className="btn btn-ghost" onClick={() => go('work')}>See Our Work</button>
           </div>
 
-          {/* Hero video — autoplays muted, loops, mobile-safe. Controls visible
-              so visitors can pause / unmute. preload=metadata keeps page light. */}
-          <div className="neural-fade-in" style={{
-            marginTop: 56,
-            maxWidth: 760,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            borderRadius: 20,
-            overflow: 'hidden',
-            boxShadow: '0 30px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,252,143,0.18)',
-            animationDelay: '1.3s'
-          }}>
-            <video
-              src="assets/hero-video.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              controls
-              preload="metadata"
-              style={{ width: '100%', height: 'auto', display: 'block', background: '#000' }}
-              aria-label="NEXT introduction video"
-            />
-          </div>
 
           <div className="neural-fade-in" style={{
             marginTop: 64, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 32,
