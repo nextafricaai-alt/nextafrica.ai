@@ -1222,16 +1222,11 @@ const SERVICE_DETAILS = [
 function WhatWeDo({ go }) {
   return (
     <div className="page">
-      {/* Full-bleed image hero — NEXT OS impact image as background, title hidden */}
-      <section style={{ position: 'relative', overflow: 'hidden', minHeight: '70vh', display: 'flex', alignItems: 'center', padding: '120px 0 80px', background: '#0A001A', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-        <img loading="eager" decoding="async" src="assets/next-os-impact.jpg" alt="NEXT OS transforming African medical, schools, governments, homes, companies, NGOs" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, filter: 'brightness(0.55) saturate(110%)' }} />
-        <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'linear-gradient(180deg, rgba(10,0,32,0.35) 0%, rgba(10,0,32,0.6) 60%, rgba(10,0,32,0.88) 100%)' }} />
-        <div className="wrap" style={{ position: 'relative', maxWidth: 1100, zIndex: 2 }}>
-          <div className="tag" style={{ marginBottom: 24 }}><span className="dot" /> WHAT WE DO</div>
-          <h1 className="h-display" style={{ marginBottom: 24 }}>We Don't Just Implement Technology.<br/><span style={{ color: 'var(--mint)' }}>We Transform Organizations.</span></h1>
-          <p className="lede" style={{ maxWidth: 720 }}>Every service NEXT delivers is designed with one goal: to move your organization from where it is today to where it needs to be tomorrow.</p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="WHAT WE DO"
+        h1={<>We Don't Just Implement Technology.<br/><span style={{ color: 'var(--mint)' }}>We Transform Organizations.</span></>}
+        sub="Every service NEXT delivers is designed with one goal: to move your organization from where it is today to where it needs to be tomorrow."
+      />
 
       {/* Anchor nav */}
       <section className="section deep tight" style={{ paddingTop: 0, position: 'sticky', top: 72, zIndex: 10, background: 'rgba(10,0,32,0.85)', backdropFilter: 'blur(14px)', borderBottom: '1px solid var(--purple-line)' }}>
@@ -1398,11 +1393,16 @@ const AUDIENCES = [
 function WhoWeServe({ go }) {
   return (
     <div className="page">
-      <PageHero
-        eyebrow="WHO WE SERVE"
-        h1={<>We Understand Your World.<br/><span style={{ color: 'var(--mint)' }}>Because We Were Built for It.</span></>}
-        sub="When a school principal, NGO director, or church leader lands here, they should immediately feel understood. That feeling is the beginning of trust."
-      />
+      {/* Full-bleed image hero — NEXT OS impact image as background */}
+      <section style={{ position: 'relative', overflow: 'hidden', minHeight: '70vh', display: 'flex', alignItems: 'center', padding: '120px 0 80px', background: '#0A001A', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+        <img loading="eager" decoding="async" src="assets/next-os-impact.jpg" alt="NEXT OS transforming African medical, schools, governments, homes, companies, NGOs" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, filter: 'brightness(0.55) saturate(110%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'linear-gradient(180deg, rgba(10,0,32,0.35) 0%, rgba(10,0,32,0.6) 60%, rgba(10,0,32,0.88) 100%)' }} />
+        <div className="wrap" style={{ position: 'relative', maxWidth: 1100, zIndex: 2 }}>
+          <div className="tag" style={{ marginBottom: 24 }}><span className="dot" /> WHO WE SERVE</div>
+          <h1 className="h-display" style={{ marginBottom: 24 }}>We Understand Your World.<br/><span style={{ color: 'var(--mint)' }}>Because We Were Built for It.</span></h1>
+          <p className="lede" style={{ maxWidth: 720 }}>When a school principal, NGO director, or church leader lands here, they should immediately feel understood. That feeling is the beginning of trust.</p>
+        </div>
+      </section>
 
       <section className="section deep" style={{ paddingTop: 24 }}>
         <div className="wrap" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
