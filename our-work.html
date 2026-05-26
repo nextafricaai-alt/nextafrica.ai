@@ -125,7 +125,32 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-  <div id="root"></div>
+  
+  <!-- Blank-page safety net: if React doesn't render within 5s, show a friendly message
+       instead of a black void. This catches Babel parse failures that would otherwise
+       leave #root empty. -->
+  <script>
+    (function () {
+      window.addEventListener('error', function (e) {
+        if (e && e.message && /Babel|SyntaxError/i.test(e.message)) {
+          console.error('[NEXT] Script error caught:', e.message);
+        }
+      });
+      setTimeout(function () {
+        var root = document.getElementById('root');
+        if (root && root.children.length === 0) {
+          root.innerHTML =
+            '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0A001A;color:#fff;font-family:sans-serif;text-align:center;padding:32px;">' +
+            '<div style="max-width:480px;">' +
+              '<div style="font-size:28px;font-weight:700;margin-bottom:16px;color:#00FC8F;">NEXT</div>' +
+              '<div style="font-size:18px;margin-bottom:24px;">Something is loading…</div>' +
+              '<div style="opacity:0.65;font-size:14px;line-height:1.5;">If this message stays for more than a few seconds, please refresh the page or come back shortly. You can also reach us on <a href="https://wa.me/+256777000000" style="color:#00FC8F;">WhatsApp</a>.</div>' +
+            '</div></div>';
+        }
+      }, 5000);
+    })();
+  </script>
+<div id="root"></div>
 
   <script type="text/babel" data-source="chrome.jsx">
 /* ===== chrome.jsx ===== */
@@ -1129,7 +1154,26 @@ function NeuralCluster({ seed = 1 }) {
     <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ overflow: 'visible' }}>
       {edges.map(([a, b, d], i) => (
         <line key={i} x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
-          stroke="#0
+          stroke="#00FC8F" strokeOpacity={Math.max(0.05, 0.3 - d / 100)} strokeWidth="0.25">
+          <animate attributeName="stroke-opacity"
+            values={`${Math.max(0.05, 0.15 - d / 200)};${Math.max(0.1, 0.4 - d / 100)};${Math.max(0.05, 0.15 - d / 200)}`}
+            dur={`${3 + (i % 4)}s`} repeatCount="indefinite" />
+        </line>
+      ))}
+      {nodes.map((n, i) => (
+        <circle key={i} cx={n.x} cy={n.y} r={n.r} fill="#00FC8F">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur={`${2 + (i % 3)}s`}
+            begin={`${n.delay}s`} repeatCount="indefinite" />
+          <animate attributeName="r" values={`${n.r};${n.r * 1.5};${n.r}`} dur={`${2 + (i % 3)}s`}
+            begin={`${n.delay}s`} repeatCount="indefinite" />
+        </circle>
+      ))}
+    </svg>
+  );
+}
+
+Object.assign(window, { Home, CaseCard, NeuralCluster, NeuralScrollClusters, SERVICES, PROCESS, INDUSTRIES, CASES, UPCOMING_TRAINING });
+
 </script>
   <script type="text/babel" data-source="pages-a.jsx">
 /* ===== pages-a.jsx ===== */
