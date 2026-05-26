@@ -107,5 +107,37 @@
     <h1>Page not found</h1>
     <p>Redirecting you home in 3 seconds — <a href="/index.html">click here if it doesn't</a>.</p>
   </div>
+
+  <!-- Hero typewriter — pure vanilla JS, type-erase-loop on #tw-target.
+       Works on every screen size because it manipulates textContent directly. -->
+  <script>
+    (function () {
+      var TEXT = "Africa's Intelligent Future Starts Here";
+      function startTypewriter() {
+        var el = document.getElementById('tw-target');
+        if (!el) { setTimeout(startTypewriter, 200); return; }
+        var i = 0, direction = 1;
+        function tick() {
+          i += direction;
+          if (i > TEXT.length) {
+            i = TEXT.length; direction = -1;
+            setTimeout(tick, 2500); return;
+          }
+          if (i < 0) {
+            i = 0; direction = 1;
+            setTimeout(tick, 600); return;
+          }
+          el.textContent = TEXT.substring(0, i);
+          setTimeout(tick, direction > 0 ? 75 : 35);
+        }
+        tick();
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startTypewriter);
+      } else {
+        startTypewriter();
+      }
+    })();
+  </script>
 </body>
 </html>

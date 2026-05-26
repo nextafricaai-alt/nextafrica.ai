@@ -20,8 +20,8 @@ function Home({ go }) {
             <span className="dot" /> AI & DIGITAL TRANSFORMATION · EAST AFRICA
           </div>
           <div className="neural-text-container">
-            <h1 className="h-display" style={{ marginBottom: 24, color: '#fff' }}>
-              <span className="typewriter-text">africa's intelligent future starts here</span>
+            <h1 className="h-display" style={{ marginBottom: 24, color: '#fff', minHeight: '1.3em' }}>
+              <span id="tw-target" className="typewriter-cursor"></span>
             </h1>
           </div>
           <div className="neural-subtitle-container">

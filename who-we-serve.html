@@ -725,8 +725,8 @@ function Home({ go }) {
             <span className="dot" /> AI & DIGITAL TRANSFORMATION · EAST AFRICA
           </div>
           <div className="neural-text-container">
-            <h1 className="h-display" style={{ marginBottom: 24, color: '#fff' }}>
-              <span className="typewriter-text">africa's intelligent future starts here</span>
+            <h1 className="h-display" style={{ marginBottom: 24, color: '#fff', minHeight: '1.3em' }}>
+              <span id="tw-target" className="typewriter-cursor"></span>
             </h1>
           </div>
           <div className="neural-subtitle-container">
@@ -1223,7 +1223,7 @@ function WhatWeDo({ go }) {
   return (
     <div className="page">
       {/* Full-bleed image hero — NEXT OS impact image as background, title hidden */}
-      <section style={{ position: 'relative', overflow: 'hidden', minHeight: '70vh', display: 'flex', alignItems: 'center', padding: '120px 0 80px', background: '#0A001A' }}>
+      <section style={{ position: 'relative', overflow: 'hidden', minHeight: '70vh', display: 'flex', alignItems: 'center', padding: '120px 0 80px', background: '#0A001A', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
         <img loading="eager" decoding="async" src="assets/next-os-impact.jpg" alt="NEXT OS transforming African medical, schools, governments, homes, companies, NGOs" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, filter: 'brightness(0.55) saturate(110%)' }} />
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'linear-gradient(180deg, rgba(10,0,32,0.35) 0%, rgba(10,0,32,0.6) 60%, rgba(10,0,32,0.88) 100%)' }} />
         <div className="wrap" style={{ position: 'relative', maxWidth: 1100, zIndex: 2 }}>
@@ -2365,5 +2365,37 @@ function App() {
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 
 </script>
+
+  <!-- Hero typewriter — pure vanilla JS, type-erase-loop on #tw-target.
+       Works on every screen size because it manipulates textContent directly. -->
+  <script>
+    (function () {
+      var TEXT = "Africa's Intelligent Future Starts Here";
+      function startTypewriter() {
+        var el = document.getElementById('tw-target');
+        if (!el) { setTimeout(startTypewriter, 200); return; }
+        var i = 0, direction = 1;
+        function tick() {
+          i += direction;
+          if (i > TEXT.length) {
+            i = TEXT.length; direction = -1;
+            setTimeout(tick, 2500); return;
+          }
+          if (i < 0) {
+            i = 0; direction = 1;
+            setTimeout(tick, 600); return;
+          }
+          el.textContent = TEXT.substring(0, i);
+          setTimeout(tick, direction > 0 ? 75 : 35);
+        }
+        tick();
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startTypewriter);
+      } else {
+        startTypewriter();
+      }
+    })();
+  </script>
 </body>
 </html>

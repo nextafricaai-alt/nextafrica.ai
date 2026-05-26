@@ -83,7 +83,7 @@ function WhatWeDo({ go }) {
   return (
     <div className="page">
       {/* Full-bleed image hero — NEXT OS impact image as background, title hidden */}
-      <section style={{ position: 'relative', overflow: 'hidden', minHeight: '70vh', display: 'flex', alignItems: 'center', padding: '120px 0 80px', background: '#0A001A' }}>
+      <section style={{ position: 'relative', overflow: 'hidden', minHeight: '70vh', display: 'flex', alignItems: 'center', padding: '120px 0 80px', background: '#0A001A', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
         <img loading="eager" decoding="async" src="assets/next-os-impact.jpg" alt="NEXT OS transforming African medical, schools, governments, homes, companies, NGOs" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, filter: 'brightness(0.55) saturate(110%)' }} />
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'linear-gradient(180deg, rgba(10,0,32,0.35) 0%, rgba(10,0,32,0.6) 60%, rgba(10,0,32,0.88) 100%)' }} />
         <div className="wrap" style={{ position: 'relative', maxWidth: 1100, zIndex: 2 }}>
