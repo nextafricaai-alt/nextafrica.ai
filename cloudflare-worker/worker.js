@@ -1,25 +1,28 @@
 /**
- * NEXT AI — Cloudflare Worker
+ * NEXT AI — Cloudflare Worker (Workers AI edition, FREE)
  * ============================================================================
- * Acts as a secure proxy between the nextafrica.ai chat widget and Anthropic's
- * Claude API. Holds the API key server-side so it never leaks to the browser.
+ * Uses Cloudflare's built-in Workers AI to run Llama 3.3 70B with no external
+ * API key or paid account. Same streaming behaviour as the Anthropic version
+ * — just swap the model engine.
  *
  * Endpoints:
  *   POST /        — main chat endpoint. Body: { messages: [{role, content}] }
- *                   Streams Claude response back as Server-Sent Events.
+ *                   Streams the reply back as Server-Sent Events.
  *
- * Environment variables (set via `wrangler secret put`):
- *   ANTHROPIC_API_KEY   — your Anthropic API key from console.anthropic.com
+ * Requirements:
+ *   wrangler.toml must enable AI binding:  [ai]\n binding = "AI"
  *
  * Tunables:
- *   MODEL               — Claude model id (default: claude-sonnet-4-6)
- *   MAX_TOKENS          — max output tokens per reply (default: 1024)
- *   MAX_HISTORY         — max messages per conversation (default: 30)
- *   ALLOWED_ORIGINS     — comma-separated list of allowed Origin headers
+ *   MODEL            — Workers AI model id
+ *   MAX_TOKENS       — max output tokens per reply
+ *   MAX_HISTORY      — max messages per conversation
+ *   ALLOWED_ORIGINS  — comma-separated list of allowed Origin headers
+ *
+ * To later upgrade to Claude (paid), see UPGRADE.md in this folder.
  * ============================================================================
  */
 
-const MODEL = 'claude-sonnet-4-6';
+const MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
 const MAX_TOKENS = 1024;
 const MAX_HISTORY = 30;
 const ALLOWED_ORIGINS = [
@@ -31,8 +34,8 @@ const ALLOWED_ORIGINS = [
 ];
 
 // ────────────────────────────────────────────────────────────────────────────
-// NEXT AI System Prompt — edit this to evolve Nia's behaviour without touching
-// the rest of the worker. Long string by design; Claude follows it closely.
+// NEXT AI System Prompt — edit this to evolve behaviour without touching the
+// rest of the worker. Long string by design; Llama follows it well.
 // ────────────────────────────────────────────────────────────────────────────
 const SYSTEM_PROMPT = `You are NEXT AI — the on-site conversational assistant for nextafrica.ai, the public website of NEXT, Africa's AI transformation company. You greet visitors, explain what NEXT does, help them think about their organisation, and guide them to the right next step on the site.
 
@@ -40,11 +43,11 @@ const SYSTEM_PROMPT = `You are NEXT AI — the on-site conversational assistant 
 NEXT helps African organisations transform through AI, automation, and intelligent digital systems. Founded in Kampala, Uganda by Hudson Timothy Tumusiime, who also founded Charis Creations (a media production company). NEXT serves the continent — schools, NGOs, churches, healthcare clinics, governments, corporations.
 
 # Services NEXT offers
-1. **AI Integration** — embedding AI into existing client workflows (document processing, customer support, internal analytics, reporting automation).
-2. **Digital Infrastructure** — building the foundational systems organisations lack: tenant management, finance, communications, dashboards.
-3. **AI Training** — practical hands-on programs for African professionals and institutions, including the AI Executive Seminar.
-4. **Creative Media (via Charis)** — storytelling, video, brand work that complements digital transformation.
-5. **Smart Operations Consulting** — diagnostics + strategy for organisations who don't yet know where to start.
+1. AI Integration — embedding AI into existing client workflows (document processing, customer support, internal analytics, reporting automation).
+2. Digital Infrastructure — building the foundational systems organisations lack: tenant management, finance, communications, dashboards.
+3. AI Training — practical hands-on programs for African professionals and institutions, including the AI Executive Seminar.
+4. Creative Media (via Charis) — storytelling, video, brand work that complements digital transformation.
+5. Smart Operations Consulting — diagnostics + strategy for organisations who don't yet know where to start.
 
 # Who NEXT serves
 - NGOs (programme management, donor reporting, field automation)
@@ -55,47 +58,32 @@ NEXT helps African organisations transform through AI, automation, and intellige
 - Corporations (workflow automation, AI-powered analytics, training)
 
 # Pricing tiers (mention only when asked or when budget comes up)
-- **Catalyst** — $149/month. For small organisations getting started. Templates + light support.
-- **Builder** — $749/month. Mid-sized orgs needing real systems built and supported.
-- **Architect** — custom pricing. For large organisations or multi-system transformations.
-If asked for exact custom quotes, say "the Architect tier is scoped per project — let's get a discovery call set up so we can give you an accurate number."
+- Catalyst — $149/month. For small organisations getting started.
+- Builder — $749/month. Mid-sized orgs needing real systems built and supported.
+- Architect — custom pricing. For large organisations or multi-system transformations.
+If asked for exact custom quotes: "the Architect tier is scoped per project — let's get a discovery call set up so we can give you an accurate number."
 
 # Tone & voice
 - Warm, professional, culturally grounded. African context is your default frame.
-- Plain language. Avoid corporate jargon ("synergize", "leverage solutions"). Speak like a thoughtful colleague.
+- Plain language. Avoid jargon. Speak like a thoughtful colleague.
 - Confident but never arrogant. Curious about the visitor's organisation.
 - Short paragraphs. 1–3 short paragraphs is the right length most of the time.
 
 # Behaviour rules
-1. **Be helpful first.** Answer the visitor's actual question with substance before suggesting any call-to-action. Don't push a discovery call after one exchange — let them lead.
-2. **Only suggest booking a discovery call when intent shows.** Signals: they ask about pricing seriously, mention a timeline, say "we need this", "how do we start", ask about a specific scope, or have asked 3+ questions about a single area.
-3. **When you DO suggest a call**, say it naturally: "Sounds like the next step would be a 30-minute discovery call with the team — you can book one on the Start page (link at top). Want me to summarise what we've discussed so far for context?"
-4. **Never fabricate.** If asked about specific case studies you don't know — say so honestly: "I don't have specifics on past clients I can share in chat. The Our Work page has the public ones, or a discovery call would surface the right reference for your context."
-5. **Never quote made-up prices.** Stick to Catalyst/Builder ranges. Anything custom needs a call.
-6. **If asked about Hudson, the team, or the company story**, point to the About page after a brief honest answer.
-7. **If asked something completely off-topic** (politics, personal opinions, controversial topics), politely redirect: "I'm here to help with NEXT and how we work with organisations — happy to dig into anything on that front."
-8. **End responses with a soft question or pointer** when appropriate. Examples: "What's the biggest operational pain right now?" / "Want me to show you the AI Training programs?" / "Which of those sounds closest to your situation?"
+1. Be helpful first. Answer the visitor's actual question with substance before suggesting any call-to-action. Don't push a discovery call after one exchange — let them lead.
+2. Only suggest booking a discovery call when intent shows. Signals: they ask about pricing seriously, mention a timeline, say "we need this", or have asked 3+ questions about a single area.
+3. When you do suggest a call, say it naturally: "Sounds like the next step would be a 30-minute discovery call — you can book one on the Start page."
+4. Never fabricate. If asked about specific case studies you don't know — say so honestly: "I don't have specifics on past clients in chat. The Our Work page has the public ones."
+5. Never quote made-up prices.
+6. If asked about Hudson, the team, or the company story, point to the About page after a brief honest answer.
+7. If asked something off-topic, politely redirect to NEXT topics.
+8. End responses with a soft question when appropriate.
 
-# Things you can do
-- Explain what NEXT does in plain language.
-- Help the visitor think through their organisation's AI readiness.
-- Recommend which service tier fits their situation.
-- Point them at specific pages: Home (/), What We Do (/what-we-do), Who We Serve (/who-we-serve), Our Work (/our-work), Training (/training), Insights (/insights), About (/about), Start (/start).
-- Summarise the conversation if asked.
-
-# Things you cannot do (be honest about these)
-- You cannot actually book a meeting — point them at the Start page.
-- You cannot quote exact custom pricing — needs a discovery call.
-- You cannot share private client details.
-- You cannot access the visitor's data unless they paste it.
-
-# When the visitor first arrives
-Their opening message might be casual ("hi") or a chip selection ("I'm an NGO"). Match their energy. Don't dump everything you know — pull on the thread they offered.
+# Site pages
+Home (/), What We Do (/what-we-do), Who We Serve (/who-we-serve), Our Work (/our-work), Training (/training), Insights (/insights), About (/about), Start (/start).
 
 You are NEXT's first impression with thousands of visitors. Be the agent every visitor wishes they had on every other website.`;
 
-// ────────────────────────────────────────────────────────────────────────────
-// Worker entry point
 // ────────────────────────────────────────────────────────────────────────────
 export default {
   async fetch(request, env) {
@@ -108,8 +96,6 @@ export default {
     if (request.method !== 'POST') {
       return jsonError('Method not allowed', 405, origin);
     }
-
-    // Origin check (only allow our own site to call this worker)
     if (origin && !ALLOWED_ORIGINS.includes(origin)) {
       return jsonError('Origin not permitted', 403, origin);
     }
@@ -129,8 +115,6 @@ export default {
     if (messages.length > MAX_HISTORY) {
       return jsonError(`Conversation too long (max ${MAX_HISTORY} messages)`, 400, origin);
     }
-
-    // Basic shape check on each message
     for (const m of messages) {
       if (!m || typeof m.role !== 'string' || typeof m.content !== 'string') {
         return jsonError('Each message needs { role, content } as strings', 400, origin);
@@ -143,39 +127,37 @@ export default {
       }
     }
 
-    if (!env.ANTHROPIC_API_KEY) {
-      return jsonError('Server misconfigured — ANTHROPIC_API_KEY not set', 500, origin);
+    if (!env.AI) {
+      return jsonError('Workers AI binding missing — set [ai] in wrangler.toml', 500, origin);
     }
 
-    // Call Claude with streaming
-    let claudeResp;
+    // Workers AI expects [{role:'system'|'user'|'assistant', content:'...'}, ...]
+    const llamaMessages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...messages,
+    ];
+
+    let aiStream;
     try {
-      claudeResp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'x-api-key': env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          max_tokens: MAX_TOKENS,
-          system: SYSTEM_PROMPT,
-          messages,
-          stream: true,
-        }),
+      aiStream = await env.AI.run(MODEL, {
+        messages: llamaMessages,
+        stream: true,
+        max_tokens: MAX_TOKENS,
+        temperature: 0.7,
       });
     } catch (err) {
-      return jsonError('Failed to reach Claude API: ' + err.message, 502, origin);
+      return jsonError('AI run failed: ' + (err.message || String(err)), 502, origin);
     }
 
-    if (!claudeResp.ok) {
-      const errText = await claudeResp.text();
-      return jsonError(`Claude API ${claudeResp.status}: ${errText}`, 502, origin);
-    }
+    // env.AI.run returns a ReadableStream with SSE-style chunks of
+    //   data: {"response":"hello"}
+    //   data: {"response":" world"}
+    //   data: [DONE]
+    // We translate it into Anthropic-compatible SSE so the frontend parser
+    // (which expects content_block_delta) doesn't have to change.
+    const translated = translateToAnthropicSSE(aiStream);
 
-    // Pipe Claude's SSE stream straight through to the browser
-    return new Response(claudeResp.body, {
+    return new Response(translated, {
       status: 200,
       headers: {
         ...corsHeaders(origin),
@@ -186,6 +168,59 @@ export default {
     });
   },
 };
+
+/**
+ * Convert Workers-AI SSE format → Anthropic-compatible SSE.
+ * Frontend already parses `content_block_delta` events so we emit those.
+ */
+function translateToAnthropicSSE(aiStream) {
+  const reader = aiStream.getReader();
+  const decoder = new TextDecoder();
+  const encoder = new TextEncoder();
+
+  return new ReadableStream({
+    async start(controller) {
+      let buffer = '';
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+
+          // SSE events separated by \n\n
+          const events = buffer.split('\n\n');
+          buffer = events.pop();
+
+          for (const ev of events) {
+            const dataLine = ev.split('\n').find((ln) => ln.startsWith('data: '));
+            if (!dataLine) continue;
+            const raw = dataLine.slice(6).trim();
+            if (!raw || raw === '[DONE]') continue;
+            try {
+              const obj = JSON.parse(raw);
+              // Workers-AI gives { response: "...text..." } per chunk
+              const text = obj.response || '';
+              if (!text) continue;
+              // Emit Anthropic-compatible content_block_delta event
+              const payload = JSON.stringify({
+                type: 'content_block_delta',
+                delta: { type: 'text_delta', text },
+              });
+              controller.enqueue(encoder.encode(`data: ${payload}\n\n`));
+            } catch (e) {
+              // skip malformed chunk
+            }
+          }
+        }
+        controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+      } catch (err) {
+        controller.error(err);
+      } finally {
+        controller.close();
+      }
+    },
+  });
+}
 
 function corsHeaders(origin) {
   const allowOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];

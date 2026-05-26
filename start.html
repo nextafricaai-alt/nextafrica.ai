@@ -132,9 +132,10 @@
 /* Global chrome: nav, footer, floating WhatsApp, NEXT AI Chatbot ------------ */
 const { useState, useEffect, useRef } = React;
 
-/* NEXT AI Configuration — paste your Cloudflare Worker URL here once deployed.
-   While empty, the chatbot falls back to a scripted reply. */
-const NEXT_AI_ENDPOINT = '';
+/* NEXT AI Configuration — Cloudflare Worker URL. Powered by Llama 3.3 70B
+   via Cloudflare Workers AI. To change behaviour, edit the SYSTEM_PROMPT in
+   cloudflare-worker/worker.js, then redeploy with `wrangler deploy`. */
+const NEXT_AI_ENDPOINT = 'https://nextafrica-ai-chat.nextafricaai.workers.dev';
 
 // Pretty URLs — .htaccess rewrites these to the .html files server-side.
 const PAGE_MAP = {
@@ -667,13 +668,7 @@ function NeuralBg() {
       opacity={i % 7 / 12 + 0.25}>
           <animate attributeName="opacity" values={`${i % 7 / 12 + 0.2};${i % 7 / 12 + 0.6};${i % 7 / 12 + 0.2}`} dur={`${3 + i % 5}s`} repeatCount="indefinite" />
         </circle>
-      )}
-    </svg>);
-
-}
-
-Object.assign(window, { Nav, Footer, FloatingWhatsApp, ChatBot, WhatsAppGlyph, NeuralBg, Logo, PAGE_MAP });
-
+ 
 </script>
   <script type="text/babel" data-source="home.jsx">
 /* ===== home.jsx ===== */

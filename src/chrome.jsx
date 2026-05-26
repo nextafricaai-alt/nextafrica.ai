@@ -1,9 +1,10 @@
 /* Global chrome: nav, footer, floating WhatsApp, NEXT AI Chatbot ------------ */
 const { useState, useEffect, useRef } = React;
 
-/* NEXT AI Configuration — paste your Cloudflare Worker URL here once deployed.
-   While empty, the chatbot falls back to a scripted reply. */
-const NEXT_AI_ENDPOINT = '';
+/* NEXT AI Configuration — Cloudflare Worker URL. Powered by Llama 3.3 70B
+   via Cloudflare Workers AI. To change behaviour, edit the SYSTEM_PROMPT in
+   cloudflare-worker/worker.js, then redeploy with `wrangler deploy`. */
+const NEXT_AI_ENDPOINT = 'https://nextafrica-ai-chat.nextafricaai.workers.dev';
 
 // Pretty URLs — .htaccess rewrites these to the .html files server-side.
 const PAGE_MAP = {

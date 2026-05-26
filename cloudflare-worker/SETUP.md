@@ -1,36 +1,21 @@
-# NEXT AI — Deploy The Chat Backend
+# NEXT AI — Deploy The Chat Backend (FREE)
 
-This folder contains the Cloudflare Worker that powers the NEXT AI chat widget on nextafrica.ai. The worker holds your Anthropic API key server-side (never in browser code) and proxies chat requests to Claude.
-
-## Why a Worker?
-
-Putting an Anthropic API key directly in browser JavaScript = anyone can steal it from DevTools and burn through your credit. The Worker is a tiny serverless function that holds the key safely. The browser talks to your Worker; the Worker talks to Claude.
+This folder contains the Cloudflare Worker that powers the NEXT AI chat widget on nextafrica.ai. It uses **Cloudflare Workers AI** (Llama 3.3 70B) — no external API key, no payment, generous free tier.
 
 ## What You Need
 
-- **GitHub account** ✓ (you have it)
-- **Anthropic API key** — 5-minute signup at console.anthropic.com
-- **Cloudflare account (free)** — 5-minute signup at dash.cloudflare.com
+- **A Cloudflare account (free)** — sign up at dash.cloudflare.com
+- **Node.js installed locally** — for running wrangler. Get it from nodejs.org if missing.
 
-Total cost: free tier covers the first ~100,000 chat requests per day. Anthropic charges per token used (~$0.001-0.005 per typical reply).
+Total time: ~5 minutes.
 
-## Step 1 — Get an Anthropic API Key
-
-1. Open **https://console.anthropic.com/**
-2. Sign up with your email (or sign in if you already have an account).
-3. Add a payment method (required to generate keys, but you only pay for what you use).
-4. Add at least $5 in credit (one-time deposit, lasts thousands of conversations).
-5. Click **API Keys** in the left sidebar → **Create Key**.
-6. Name it `next-ai-website` and click Create.
-7. **Copy the key** (starts with `sk-ant-...`). You won't see it again. Paste it somewhere safe for the next step.
-
-## Step 2 — Create Cloudflare Account
+## Step 1 — Create Cloudflare Account
 
 1. Open **https://dash.cloudflare.com/sign-up**
 2. Sign up with your email. Verify it.
-3. You'll land on the dashboard. No need to add a website here — we're only using Workers.
+3. You'll land on the dashboard. No need to add a website here.
 
-## Step 3 — Install Wrangler (Cloudflare's CLI)
+## Step 2 — Install Wrangler (Cloudflare's CLI)
 
 In PowerShell:
 
@@ -46,7 +31,7 @@ wrangler --version
 ```
 Should print something like `4.x.x`.
 
-## Step 4 — Login Wrangler To Your Cloudflare Account
+## Step 3 — Login Wrangler To Your Cloudflare Account
 
 ```
 wrangler login
@@ -54,29 +39,21 @@ wrangler login
 
 A browser window opens → click **Allow** to authorise wrangler. Return to PowerShell. You're signed in.
 
-## Step 5 — Set Your Anthropic API Key As A Secret
+## Step 4 — Deploy The Worker
 
-`cd` into this folder first:
+`cd` into this folder:
 
 ```
 cd "C:\Users\LIZ\Downloads\NEXT_OS (2)\next-ai-website\cloudflare-worker"
 ```
 
-Now set the secret:
-
-```
-wrangler secret put ANTHROPIC_API_KEY
-```
-
-It prompts: "Enter a secret value:" — paste your Anthropic key and press Enter. Wrangler encrypts and stores it on Cloudflare's side. It's never written to disk locally.
-
-## Step 6 — Deploy The Worker
+Deploy:
 
 ```
 wrangler deploy
 ```
 
-Output looks like:
+Output:
 ```
 Uploaded nextafrica-ai-chat (1.5 sec)
 Published nextafrica-ai-chat
@@ -86,27 +63,25 @@ Current Version ID: abc-123-def
 
 **Copy that URL** (the `.workers.dev` one). That's your chat backend.
 
-## Step 7 — Tell The Website Where The Worker Lives
+## Step 5 — Tell The Website Where The Worker Lives
 
-Open `C:\Users\LIZ\Downloads\NEXT_OS (2)\next-ai-website\src\chrome.jsx` in Notepad or VS Code.
+Open `C:\Users\LIZ\Downloads\NEXT_OS (2)\next-ai-website\src\chrome.jsx` in Notepad / VS Code.
 
-Find this line (near the top of the file):
+Find this line near the top:
 
 ```js
-const NEXT_AI_ENDPOINT = '';   // set to your Cloudflare Worker URL after deploying
+const NEXT_AI_ENDPOINT = '';
 ```
 
-Replace the empty string with your Worker URL:
+Replace with your Worker URL:
 
 ```js
 const NEXT_AI_ENDPOINT = 'https://nextafrica-ai-chat.<your-subdomain>.workers.dev';
 ```
 
-Save the file.
+Save.
 
-## Step 8 — Rebuild HTML + Push
-
-In PowerShell, from the website root:
+## Step 6 — Rebuild + Push
 
 ```
 cd "C:\Users\LIZ\Downloads\NEXT_OS (2)\next-ai-website"
@@ -116,50 +91,34 @@ git commit -m "Wire NEXT AI chat to live Cloudflare Worker"
 git push
 ```
 
-Hostinger auto-pulls. Within 60 seconds the chat widget is live.
+Hostinger auto-pulls. Within 60 seconds the live chat is wired.
 
-## Step 9 — Test It
+## Cost
 
-1. Open `https://nextafrica.ai` in Incognito.
-2. Click the green **"Chat with NEXT AI"** button (bottom-right).
-3. Type "Hi" or click one of the suggestion chips.
-4. You should see a real Claude response stream in character-by-character within ~1 second.
+**Free.**
 
-If you see "Sorry, I'm having trouble connecting…" → check:
-- Did the secret save? `wrangler secret list` should show ANTHROPIC_API_KEY.
-- Did Anthropic accept payment? Check console.anthropic.com → Billing.
-- Is the Worker URL correct in chrome.jsx?
+- Cloudflare Workers — first 100,000 requests/day free
+- Workers AI — 10,000 neurons/day free (one neuron ≈ a few seconds of small-model inference; a typical chat reply uses 5-50 neurons)
+
+Practical: ~200 to 2,000 conversations per day stay free. If you blow past that, Cloudflare bills $5/month + ~$0.011 per neuron — still cheap.
 
 ## Updating The System Prompt Later
 
-The personality + knowledge that NEXT AI has lives in `worker.js` (search for `SYSTEM_PROMPT`). Edit that string anytime — add new services, change pricing, refine tone — then redeploy:
+`worker.js` has a long `SYSTEM_PROMPT` constant. Edit it → save → `wrangler deploy` → live in 30 seconds. The website doesn't need to change.
 
-```
-wrangler deploy
-```
+## Upgrading To Claude Later (Optional)
 
-That's a 30-second update. The website doesn't need to change.
+If Llama's quality isn't enough for production, swap to Anthropic Claude:
 
-## Monitoring
+1. Sign up at console.anthropic.com, add $5 credit, generate API key.
+2. Run `wrangler secret put ANTHROPIC_API_KEY` → paste the key.
+3. Replace the `env.AI.run(...)` block in `worker.js` with a `fetch('https://api.anthropic.com/v1/messages', ...)` call.
+4. Redeploy.
 
-Cloudflare dashboard → Workers → nextafrica-ai-chat → Logs tab shows every request and response live. Errors show up there too.
+The frontend stays identical — same streaming format, same chat UI.
 
-Anthropic console shows token usage and cost per conversation.
+## If Something Breaks
 
-## Cost Estimate
-
-Typical chat exchange: ~500 input tokens + ~200 output tokens = ~$0.002 (Claude Sonnet 4.6 pricing).
-- 100 conversations/day → ~$0.20/day → ~$6/month
-- 1,000 conversations/day → ~$2/day → ~$60/month
-
-Cloudflare Worker: **free** up to 100,000 requests/day.
-
-## If You Want To Use Your Own Domain
-
-Optionally, point `chat.nextafrica.ai` at the Worker so the URL looks branded:
-
-1. In Cloudflare dashboard → Workers & Pages → your worker → Triggers → Custom Domains.
-2. Add `chat.nextafrica.ai` (you'll need to add nextafrica.ai as a site in Cloudflare first).
-3. Update `NEXT_AI_ENDPOINT` in chrome.jsx to the new URL.
-
-This is purely cosmetic — the `.workers.dev` URL works identically.
+- **"Workers AI binding missing"** — your wrangler.toml is missing the `[ai]` block. Already set in the version we ship, but if you edited it: ensure `[ai]\nbinding = "AI"` is present.
+- **CORS errors** — your Worker URL is not in the ALLOWED_ORIGINS list at the top of worker.js. Add it and redeploy.
+- **No reply** — Cloudflare dashboard → Workers → nextafrica-ai-chat → Logs tab shows live errors.
