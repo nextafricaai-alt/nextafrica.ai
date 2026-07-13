@@ -2391,10 +2391,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     (function () {
       var TEXT = "Africa's Intelligent Future Starts Here";
       function startTypewriter() {
-        var el = document.getElementById('tw-target');
-        if (!el) { setTimeout(startTypewriter, 200); return; }
         var i = 0, direction = 1;
         function tick() {
+          var el = document.getElementById('tw-target');
+          if (!el) { setTimeout(tick, 200); return; }
           i += direction;
           if (i > TEXT.length) {
             i = TEXT.length; direction = -1;
